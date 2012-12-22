@@ -61,7 +61,7 @@ if (!function_exists("my_debug")) {
 
 switch($modx->event->name) {
 
-    case 'OnWebPagePrerender':
+    case 'OnLoadWebDocument':
 
         $date = $modx->resource->getTVValue('StageDate');
         if ( empty($date)) {
@@ -69,14 +69,14 @@ switch($modx->event->name) {
         }
         $timeStamp = strtotime($date);
 
-        my_debug('NOW: ' . time());
+        my_debug('NOW: ' . time(), true);
         my_debug('STAGE_DATE: ' . $timeStamp);
         if (time() >= $timeStamp) { /* Time to update Resource */
             $stageID = $modx->resource->getTVValue('StageID');
             if (!empty($stageID)) {
                 $newResource = $modx->getObject('modResource', $stageID);
             } else { /* try with pagetitle */
-                $pt = $resource->get('pagetitle') . '-' . $date;
+                $pt = $modx->resource->get('pagetitle') . '-' . $date;
                 $newResource = $modx->getObject('modResource', array('pagetitle' => $pt));
             }
             if (empty($newResource)) {
@@ -86,20 +86,32 @@ switch($modx->event->name) {
                 my_debug('Resource OK');
             }
             $fields = $newResource->toArray();
-            unset($fields['id'], $fields['published'], $fields['hidemenu']);
+            unset($fields['id'], $field['pagetitle'], $fields['published'], $fields['hidemenu'], $fields['parent']);
+            $modx->resource->set('publishedon', time());
             $modx->resource->fromArray($fields);
+            $modx->resource->save();
+            $newResource->remove();
 
         }
-
         break;
+
     case 'OnDocFormSave':
         /* @var $oldTv modTemplateVar */
+        $stageId = $resource->getTVValue('StageID');
+        $stageFolder = $modx->getOption('stagecoach_resource_id', null, 0);
+        $archiveFolder = $modx->getOption('stagecoach_archive_id', null, 0);
+
+        /* Don't execute on staged or archived Resources */
+        if ($stageId && (($stageId == $stageFolder) || $stageId == $archiveFolder)) {
+            return '';
+        }
+
         $date = $resource->getTVValue('StageDate');
         if (empty($date)) {
             return '';
         }
         $pt = $resource->get('pagetitle') . '-' . $date;
-        $stageId = $resource->getTVValue('StageID');
+
         if (!empty($stageId)) { /* use is just updating the date */
             $res = $modx->getObject('modResource', $stageId);
             if ($res) { /* update pagetitle to new date */
