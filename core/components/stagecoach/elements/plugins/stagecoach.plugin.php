@@ -102,7 +102,8 @@ switch($modx->event->name) {
         $archiveFolder = $modx->getOption('stagecoach_archive_id', null, 0);
 
         /* Don't execute on staged or archived Resources */
-        if ($stageId && (($stageId == $stageFolder) || $stageId == $archiveFolder)) {
+        $thisParent = $modx->resource->get('parent');
+        if ($thisParent && ( ($thisParent == $stageFolder) || ($thisParent == $archiveFolder))) {
             return '';
         }
 
@@ -129,7 +130,7 @@ switch($modx->event->name) {
         $params = array(
             'newName' => $pt,
             'publishMode' => 'unpublish',
-            'parent' => $modx->getOption('stagecoach_resource_id',null,0),
+            'parent' => $stageFolder,
         );
         $newResource = $resource->duplicate($params);
         $newId = $newResource->get('id');
