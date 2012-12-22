@@ -73,6 +73,8 @@ switch($modx->event->name) {
         my_debug('STAGE_DATE: ' . $timeStamp);
         if (time() >= $timeStamp) { /* Time to update Resource */
             $stageID = $modx->resource->getTVValue('StageID');
+            $archive = $modx->getOption('stagecoach_archive_original', null, false);
+
             if (!empty($stageID)) {
                 $newResource = $modx->getObject('modResource', $stageID);
             } else { /* try with pagetitle */
@@ -82,13 +84,25 @@ switch($modx->event->name) {
             if (empty($newResource)) {
                 my_debug('No Resource');
                 return;
-            } else {
-                my_debug('Resource OK');
+            }
+            if ($archive) {
+                $archiveFolder = $modx->getOption('stagecoach_archive_id', null, 0);
+                    if ($archiveFolder) {
+                    $params = array(
+                        'publishMode' => 'unpublish',
+                        'parent' => $archiveFolder,
+                        'newName' => $newResource->get('pagetitle') . '-' . 'Archived',
+                    );
+                    $modx->resource->duplicate($params);
+                }
             }
             $fields = $newResource->toArray();
-            unset($fields['id'], $field['pagetitle'], $fields['published'], $fields['hidemenu'], $fields['parent']);
+            unset($fields['id'], $fields['pagetitle'], $fields['published'], $fields['hidemenu'], $fields['parent']);
             $modx->resource->set('publishedon', time());
             $modx->resource->fromArray($fields);
+            $modx->resource->setTVValue('StageID', '');
+            $modx->resource->setTVValue('StageDate','');
+            my_debug('PageTitle: ' . $modx->resource->get('pagetitle'));
             $modx->resource->save();
             $newResource->remove();
 
