@@ -127,7 +127,7 @@ switch($modx->event->name) {
         }
         $pt = $resource->get('pagetitle') . '-' . $date;
 
-        if (!empty($stageId)) { /* use is just updating the date */
+        if (!empty($stageId)) { /* user is just updating the date */
             $res = $modx->getObject('modResource', $stageId);
             if ($res) { /* update pagetitle to new date */
                 $res->set('pagetitle',$pt);
