@@ -3,7 +3,7 @@
  * resources transport file for StageCoach extra
  *
  * Copyright 2012 by Bob Ray <http://bobsguides.com>
- * Created on 12-22-2012
+ * Created on 12-24-2012
  *
  * @package stagecoach
  * @subpackage build
@@ -74,7 +74,7 @@ $resources[2]->fromArray(array(
     'alias' => 'stagecoach-archive',
     'link_attributes' => '',
     'published' => '',
-    'isfolder' => '',
+    'isfolder' => '1',
     'introtext' => '',
     'richtext' => '',
     'template' => 'default',

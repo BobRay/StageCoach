@@ -3,7 +3,7 @@
  * systemSettings transport file for StageCoach extra
  *
  * Copyright 2012 by Bob Ray <http://bobsguides.com>
- * Created on 12-22-2012
+ * Created on 12-24-2012
  *
  * @package stagecoach
  * @subpackage build
@@ -28,14 +28,30 @@ $systemSettings = array();
 $systemSettings[1] = $modx->newObject('modSystemSetting');
 $systemSettings[1]->fromArray(array(
     'key' => 'stagecoach_resource_id',
-    'value' => '1964',
+    'value' => '',
     'xtype' => 'textfield',
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
 ), '', true, true);
 $systemSettings[2] = $modx->newObject('modSystemSetting');
 $systemSettings[2]->fromArray(array(
+    'key' => 'stagecoach_archive_id',
+    'value' => '',
+    'xtype' => 'textfield',
+    'namespace' => 'stagecoach',
+    'area' => 'StageCoach',
+), '', true, true);
+$systemSettings[3] = $modx->newObject('modSystemSetting');
+$systemSettings[3]->fromArray(array(
     'key' => 'stagecoach_archive_original',
+    'value' => true,
+    'xtype' => 'combo-boolean',
+    'namespace' => 'stagecoach',
+    'area' => 'StageCoach',
+), '', true, true);
+$systemSettings[4] = $modx->newObject('modSystemSetting');
+$systemSettings[4]->fromArray(array(
+    'key' => 'stagecoach_include_tvs',
     'value' => false,
     'xtype' => 'combo-boolean',
     'namespace' => 'stagecoach',

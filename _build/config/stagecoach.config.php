@@ -61,14 +61,32 @@ $components = array(
             'name' => 'StageCoach Resource ID',
             'description' => 'stage_coach_resource_id_desc~~ID of StageCoach container Resource',
             'namespace' => 'stagecoach',
-            'xtype' => 'textField',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'StageCoach',
+        ),
+        'stagecoach_archive_id' => array(
+            'key' => 'stagecoach_archive_id',
+            'name' => 'StageCoach Archive ID',
+            'description' => 'stage_coach_archive_id_desc~~ID of StageCoach Archive container Resource',
+            'namespace' => 'stagecoach',
+            'xtype' => 'textfield',
             'value' => '',
             'area' => 'StageCoach',
         ),
         'stagecoach_archive_original' => array(
             'key' => 'stagecoach_archive_original',
             'name' => 'StageCoach Archive Original',
-            'description' => 'stage_archive_original_desc~~If set, previous versions of updated Resources will be archived',
+            'description' => 'stagecoach_archive_original_desc~~If set, previous versions of updated Resources will be archived',
+            'namespace' => 'stagecoach',
+            'xtype' => 'combo-boolean',
+            'value' => false,
+            'area' => 'StageCoach',
+        ),
+        'stagecoach_include_tvs' => array(
+            'key' => 'stagecoach_include_tvs',
+            'name' => 'StageCoach Include TVs',
+            'description' => 'stagecoach_include_tvs~~If set, TV values of the resource will be updated',
             'namespace' => 'stagecoach',
             'xtype' => 'combo-boolean',
             'value' => false,
@@ -139,7 +157,7 @@ $components = array(
                         'priority' => '0', /* priority of the event -- 0 is highest priority */
                         'group' => 'plugins', /* should generally be set to 'plugins' */
                     ),
-                    'OnWebPagePrerender' => array(
+                    'OnLoadWebDocument' => array(
                         'priority' => '0',
                         'group' => 'plugins',
                     ),
@@ -153,6 +171,17 @@ $components = array(
                 'description' => 'Date Resource will be updated',
                 'caption' => 'Stage Date',
                 'type' => 'date',
+                'default_text' => '',
+
+                'templates' => array(
+                    'default' => 1,
+                ),
+            ),
+            'StageDate' => array(
+                'category' => 'StageCoach',
+                'description' => 'ID of staged Resource (set automatically)',
+                'caption' => 'Stage ID',
+                'type' => 'textfield',
                 'default_text' => '',
 
                 'templates' => array(

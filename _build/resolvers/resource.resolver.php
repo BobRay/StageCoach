@@ -4,7 +4,7 @@
 * Sets template, parent, and (optionally) TV values
 *
 * Copyright 2012 by Bob Ray <http://bobsguides.com>
-* Created on 12-22-2012
+* Created on 12-24-2012
 *
  * StageCoach is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
