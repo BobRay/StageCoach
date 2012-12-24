@@ -44,7 +44,7 @@ $systemSettings[2]->fromArray(array(
 $systemSettings[3] = $modx->newObject('modSystemSetting');
 $systemSettings[3]->fromArray(array(
     'key' => 'stagecoach_archive_original',
-    'value' => true,
+    'value' => false,
     'xtype' => 'combo-boolean',
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
