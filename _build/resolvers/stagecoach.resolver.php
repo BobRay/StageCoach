@@ -35,6 +35,7 @@ if ($object->xpdo) {
             $res = $modx->getObject('modResource', array('alias' => 'staged-resources'));
             if ($res && $setting) {
                 $setting->set('value', $res->get('id'));
+                $setting->save();
             } else {
                 $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_resource_id System Setting');
             }
@@ -43,6 +44,7 @@ if ($object->xpdo) {
             $res = $modx->getObject('modResource', array('alias' => 'stagecoach-archive'));
             if ($res && $setting) {
                 $setting->set('value', $res->get('id'));
+                $setting->save();
             } else {
                 $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_archive_id System Setting');
             }
