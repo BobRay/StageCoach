@@ -38,7 +38,7 @@
 if (!function_exists("my_debug")) {
     function my_debug($message, $clear = false) {
         global $modx;
-
+        $content = '';
         $chunk = $modx->getObject('modChunk', array('name' => 'Debug'));
         if (!$chunk) {
             $chunk = $modx->newObject('modChunk', array('name' => 'Debug'));
@@ -69,20 +69,20 @@ switch($modx->event->name) {
         }
         $timeStamp = strtotime($date);
 
-        my_debug('NOW: ' . time(), true);
-        my_debug('STAGE_DATE: ' . $timeStamp);
+        // my_debug('NOW: ' . time(), true);
+        // my_debug('STAGE_DATE: ' . $timeStamp);
         if (time() >= $timeStamp) { /* Time to update Resource */
             $stageID = $modx->resource->getTVValue('StageID');
             $archive = $modx->getOption('stagecoach_archive_original', null, false);
-
+            $includeTvs = $modx->getOption('stagecoach_include_tvs', null, false);
             if (!empty($stageID)) {
-                $newResource = $modx->getObject('modResource', $stageID);
+                $stagedResource = $modx->getObject('modResource', $stageID);
             } else { /* try with pagetitle */
                 $pt = $modx->resource->get('pagetitle') . '-' . $date;
-                $newResource = $modx->getObject('modResource', array('pagetitle' => $pt));
+                $stagedResource = $modx->getObject('modResource', array('pagetitle' => $pt));
             }
-            if (empty($newResource)) {
-                my_debug('No Resource');
+            if (empty($stagedResource)) {
+                // my_debug('No Resource');
                 return;
             }
             if ($archive) {
@@ -91,20 +91,50 @@ switch($modx->event->name) {
                     $params = array(
                         'publishMode' => 'unpublish',
                         'parent' => $archiveFolder,
-                        'newName' => $newResource->get('pagetitle') . '-' . 'Archived',
+                        'newName' => $stagedResource->get('pagetitle') . '-' . 'Archived',
                     );
-                    $modx->resource->duplicate($params);
+                    $archivedResource = $modx->resource->duplicate($params);
+                    $archivedResource->setTVValue('stageID', '');
+                    $archivedResource->setTVValue('stageDate', '');
                 }
             }
-            $fields = $newResource->toArray();
-            unset($fields['id'], $fields['pagetitle'], $fields['published'], $fields['hidemenu'], $fields['parent']);
+            $fields = $stagedResource->toArray();
+            unset($fields['id'], $fields['pagetitle'], $fields['alias'], $fields['published'], $fields['hidemenu'], $fields['parent'], $fields['uri']);
             $modx->resource->set('publishedon', time());
             $modx->resource->fromArray($fields);
             $modx->resource->setTVValue('StageID', '');
-            $modx->resource->setTVValue('StageDate','');
-            my_debug('PageTitle: ' . $modx->resource->get('pagetitle'));
+            $modx->resource->setTVValue('StageDate', '');
+            $stagedResource->setTVValue('StageID', '');
+            $stagedResource->setTVValue('StageDate','');
+            // my_debug('PageTitle: ' . $modx->resource->get('pagetitle'));
             $modx->resource->save();
-            $newResource->remove();
+            if ($includeTvs) {
+                $tvds = $stagedResource->getMany('TemplateVarResources');
+                // my_debug('TVDS: ' . count($tvds) );
+                $resourceId = $modx->resource->get('id');
+
+                foreach ($tvds as $oldTemplateVarResource) {
+                    /** @var $tvr modTemplateVarResource */
+                    /** @var $oldTemplateVarResource modTemplateVarResource */
+                    /** @var $newTemplateVarResource modTemplateVarResource */
+                    $value = $oldTemplateVarResource->get('value');
+                    // my_debug('ID: ' . $oldTemplateVarResource->get('tmplvarid') . ' -- Value: ' . $value);
+
+                    $c = array(
+                        'contentid' => $resourceId,
+                        'tmplvarid' => $oldTemplateVarResource->get('tmplvarid'),
+                    );
+                    /* get Tvr for current resource and set it from staged resource */
+                    $tvr = $modx->getObject('modTemplateVarResource', $c);
+                    if ($tvr) {
+                        $tvr->set('value', $value);
+                        $tvr->save();
+                    } else {
+                        // my_debug('Failed to get TVR');
+                    }
+                }
+            }
+            $stagedResource->remove();
 
         }
         break;
@@ -146,8 +176,12 @@ switch($modx->event->name) {
             'publishMode' => 'unpublish',
             'parent' => $stageFolder,
         );
-        $newResource = $resource->duplicate($params);
-        $newId = $newResource->get('id');
+
+        $stagedResource = $resource->duplicate($params);
+        $stagedResource->save();
+        $stagedResource->setTVValue('stageID', '');
+        $stagedResource->setTVValue('stageDate', '');
+        $newId = $stagedResource->get('id');
         $resource->setTVValue('stageID', $newId);
         break;
 }
