@@ -51,9 +51,9 @@ $templateVars[2]->fromArray(array(
     'description' => 'ID of staged Resource (set automatically)',
     'elements' => '',
     'rank' => '1',
-    'display' => '',
+    'display' => 'default',
     'default_text' => '',
-    'properties' => '',
+    'properties' => array(),
     'input_properties' => array(),
     'output_properties' => array(),
 ), '', true, true);
