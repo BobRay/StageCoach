@@ -34,3 +34,14 @@
  * @package stagecoach
  **/
 
+
+
+/* System Setting Names and Descriptions */
+$_lang['setting_stagecoach_resource_id'] = 'StageCoach Resource ID';
+$_lang['setting_stagecoach_resource_id_desc'] = 'ID of StageCoach container Resource';
+$_lang['setting_stagecoach_archive_id'] = 'StageCoach Archive ID';
+$_lang['setting_stagecoach_archive_id_desc'] = 'ID of StageCoach Archive container Resource';
+$_lang['setting_stagecoach_archive_original'] = 'StageCoach Archive Original';
+$_lang['setting_stagecoach_archive_original_desc'] = 'If set, previous versions of updated Resources will be archived';
+$_lang['setting_stagecoach_include_tvs'] = 'StageCoach Include TVs';
+$_lang['setting_stagecoach_include_tvs_desc'] = 'If set, TV values of the resource will be updated';

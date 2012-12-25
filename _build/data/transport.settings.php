@@ -32,6 +32,7 @@ $systemSettings[1]->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
+    'description' => 'ID of StageCoach Staged Resource folder',
 ), '', true, true);
 $systemSettings[2] = $modx->newObject('modSystemSetting');
 $systemSettings[2]->fromArray(array(
@@ -40,6 +41,7 @@ $systemSettings[2]->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
+    'description' => 'ID of StageCoach Archived Resource folder',
 ), '', true, true);
 $systemSettings[3] = $modx->newObject('modSystemSetting');
 $systemSettings[3]->fromArray(array(
@@ -48,6 +50,7 @@ $systemSettings[3]->fromArray(array(
     'xtype' => 'combo-boolean',
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
+    'description' => 'If set, original versions or Resources will be archived when updated; default: false',
 ), '', true, true);
 $systemSettings[4] = $modx->newObject('modSystemSetting');
 $systemSettings[4]->fromArray(array(
@@ -56,5 +59,6 @@ $systemSettings[4]->fromArray(array(
     'xtype' => 'combo-boolean',
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
+    'description' => 'If set, updated Template Variables in staged resources will be copied; default: false',
 ), '', true, true);
 return $systemSettings;
