@@ -141,6 +141,11 @@ switch($modx->event->name) {
 
     case 'OnDocFormSave':
         /* @var $oldTv modTemplateVar */
+
+        /* Don't execute for new resources */
+        if ($mode != modSystemEvent::MODE_UPD) {
+            return;
+        }
         $stageId = $resource->getTVValue('StageID');
         $stageFolder = $modx->getOption('stagecoach_resource_id', null, 0);
         $archiveFolder = $modx->getOption('stagecoach_archive_id', null, 0);
