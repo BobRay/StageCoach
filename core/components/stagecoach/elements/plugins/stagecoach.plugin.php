@@ -84,7 +84,10 @@ switch($modx->event->name) {
                 $stagedResource = $modx->getObject('modResource', array('pagetitle' => $pt));
             }
             if (empty($stagedResource)) {
-                $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] ' . $modx->lexicon('stagecoach_no_resource~~No staged Resource found with ID ' . $stageID) );
+                $modx->lexicon->load('stagecoach:default');
+                $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] ' .
+                    $modx->lexicon('stagecoach_no_resource')
+                        . ' ' . $stageID) ;
 
                 return;
             }
