@@ -58,8 +58,8 @@ $systemSettings[4]->fromArray(array(
     'area' => 'StageCoach',
 ), '', true, true);
 
-$systemSettings[4] = $modx->newObject('modSystemSetting');
-$systemSettings[4]->fromArray(array(
+$systemSettings[5] = $modx->newObject('modSystemSetting');
+$systemSettings[5]->fromArray(array(
    'key' => 'stagecoach_update_publishedon_date',
    'value' => false,
    'xtype' => 'combo-boolean',
