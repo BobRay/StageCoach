@@ -17,7 +17,7 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <p>You can also edit the original Resource if you like, but be sure the Stage Date TV is not set (it should be unset automatically), or StageCoach will attempt to save another staged Resource.</p>
 
-<p>If you decide to change the stage Date, just edit the Stage Date TV of the original Resource. StageCoach will rename the staged Resource to reflect the new date. Be sure *not* to edit the Stage ID TV. It must remain unchanged.</p>
+<p>If you decide to change the Stage Date, just edit the Stage Date TV of the original Resource. StageCoach will rename the staged Resource to reflect the new date. Be sure *not* to edit the Stage ID TV. It must remain unchanged.</p>
 
 <p>The StageCoach TVs will be attached automatically to the Site's default Template, but you can disconnect them if no Resources to be
 staged use that Template. Be sure to attach the StageCoach TVs to any other Templates used by Resources you want to stage.</p>
@@ -28,6 +28,8 @@ staged use that Template. Be sure to attach the StageCoach TVs to any other Temp
 <p>In order to speed up the initial page loads, StageCoach does not update TVs by default. If you will be changing the values of any TVs in the staged Resource, be sure to set the <fixedpre>stagecoach_include_tvs</fixedpre> System Setting to <fixedpre>Yes</fixedpre>.</p>
 
 <p>Archiving the original Resource is also turned off by default. Change the <fixedpre>stagecoach_archive_original</fixedpre> System Setting to <fixedpre>Yes</fixedpre> if you want archiving.</p>
+
+<p>By default, the <fixedpre>publishedon</fixedpre> date of the original resource is preserved. If you set the <fixedpre>stagecoach_update_published_on_date</fixedpre> System Setting to <fixedpre>Yes</fixedpre>, the <fixedpre>publishedon</fixedpre> date will be updated to the Stage Date.</p>
 
 <p>To set the System Settings, go to System | System Settings and type &quot;stagecoach&quot; in the Search box at the upper right and press Enter. To change a Setting, double-click on the value or right-click on the Setting and select &quot;Update Setting.&quot;</p>
 
@@ -61,6 +63,11 @@ staged use that Template. Be sure to attach the StageCoach TVs to any other Temp
     <tr>
         <td>stagecoach_include_tvs</td>
         <td>If set, TV values of the resource will be updated</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td>stagecoach_update_published_on_date</td>
+        <td>If set, the Published On date of the original resource will be updated to the Stage Date</td>
         <td>false</td>
     </tr>
 </table>

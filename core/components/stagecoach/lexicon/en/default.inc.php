@@ -45,6 +45,9 @@ $_lang['setting_stagecoach_archive_original'] = 'StageCoach Archive Original';
 $_lang['setting_stagecoach_archive_original_desc'] = 'If set, previous versions of updated Resources will be archived';
 $_lang['setting_stagecoach_include_tvs'] = 'StageCoach Include TVs';
 $_lang['setting_stagecoach_include_tvs_desc'] = 'If set, TV values of the resource will be updated';
+$_lang['setting_stagecoach_update_published_on_date'] = 'StageCoach Update Published On Date';
+$_lang['setting_stagecoach_update_published_on_date_desc'] = 'If set, the Published On date of the original resource will be updated to the Stage Date';
+
 
 /* used in StageCoach or its included classes  */
 $_lang['stagecoach_no_resource'] = 'No staged Resource found with ID';
