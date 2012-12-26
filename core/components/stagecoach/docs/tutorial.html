@@ -1,20 +1,66 @@
 <p>For new Resources in MODX, you can set a future publication date so that the new content won't appear until that date, but sometimes you want to stage changes to an existing Resource and not have the changes appear until a future date. That's exactly what StageCoach does for you.</p>
 
-<p>(Jump to <a href="[[~[[*id]]]]#propertiesTable">Properties Table</a>.)</p>
+<p>(Jump to <a href="[[~[[*id]]]]#settingsTable">System Settings Table</a>.)</p>
 
 <h3>Installing StageCoach</h3>
 
 <p>
-Go to System | Package Management on the main menu in the MODX Manager and click on the "Download Extras" button. That will take you to the
-Revolution Repository (AKA Web Transport Facility). Put StageCoach in the search box and press Enter. Click on the "Download" button, and
-when it changes to "Downloaded," click on the "Finish" button. That should bring you back to your Package Management grid. Click on the
-"Install" button next to StageCoach in the grid. The StageCoach package should now be installed.</p>
+Go to System | Package Management on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository (AKA Web Transport Facility). Put [[+packageName]] in the search box and press Enter. Click on the &quot;Download&quot; button, and once the package is downloaded, click on the &quot;Back to Package Manager&quot; button. That should bring you back to your Package Management grid. Click on the
+&quot;Install&quot; button next to [[+packageName]] in the grid. The [[+packageName]] package should now be installed.</p>
 
 <h3>Usage</h3>
 
+<p>To stage a Resource for later update, edit the Resource in the Manager, and on the &quot;Template Variables&quot; tab, select the &quot;Stagecoach&quot; section. Set the date and time in the &quot;Stage Date&quot; TV and save the Resource. Do *not* set the
+&quot;Staged Resource ID&quot; TV. It will be set automatically by StageCoach.</p>
+
+<p>When a Resource is saved with the Stage Date TV set, StageCoach will make a copy of it in the &quot;Staged Resources&quot; Folder. The update date will be appended to the pagetitle. This is the staged Resource. You can edit it as many times as you like before the Stage Date. When the original page is first visited after the Stage Date, StageCoach will updated it from the staged Resource and delete the staged Resource.</p>
+
+<p>You can also edit the original Resource if you like, but be sure the Stage Date TV is not set (it should be unset automatically), or StageCoach will attempt to save another staged Resource.</p>
+
+<p>The StageCoach TVs will be attached automatically to the Site's default Template, but you can disconnect them if no Resources to be
+staged use that Template. Be sure to attach the StageCoach TVs to any other Templates used by Resources you want to stage.</p>
 
 
+<p>If the <fixedpre>stagecoach_archive_original</fixedpre> System Setting is set to <fixedpre>Yes</fixedpre>, before updating the original Resource, StageCoach will save a copy of it in the Archived Resources folder. StageCoach doesn't use the archived Resources for anything so you can delete them at will (or not have them at all).</p>
 
-<a name="propertiesTable"></a>
+<p>In order to speed up the initial page loads, StageCoach does not update TVs by default. If you will be changing the values of any TVs in the staged Resource, be sure to set the <fixedpre>stagecoach_include_tvs</fixedpre> System Setting to <fixedpre>Yes</fixedpre>.</p>
 
-<h3>StageCoach Properties</h3>
+<p>Archiving the original Resource is also turned off by default. Change the <fixedpre>stagecoach_archive_original</fixedpre> System Setting to <fixedpre>Yes</fixedpre> if you want archiving.</p>
+
+<p>To set the System Settings, go to System | System Settings and type &quot;stagecoach&quot; in the Search box at the upper right and press Enter. To change a Setting, double-click on the value or right-click on the Setting and select &quot;Update Setting.&quot;</p>
+
+
+<a name="settingsTable"></a>
+
+<h3>StageCoach System Settings</h3>
+
+<table class="properties">
+    <tr>
+        <th>Setting</th>
+        <th>Description</th>
+        <th>Default</th>
+    </tr>
+
+    <tr>
+        <td>stagecoach_resource_id</td>
+        <td>ID of StageCoach container Resource</td>
+        <td>(set automatically)</td>
+    </tr>
+    <tr>
+        <td>stagecoach_archive_id</td>
+        <td>ID of StageCoach Archive container Resource</td>
+        <td>(set automatically)</td>
+    </tr>
+    <tr>
+        <td>stagecoach_archive_original</td>
+        <td>If set, previous versions of updated Resources will be archived</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td>stagecoach_include_tvs</td>
+        <td>If set, TV values of the resource will be updated</td>
+        <td>false</td>
+    </tr>
+</table>
+
+<p>&nbsp;</p>
