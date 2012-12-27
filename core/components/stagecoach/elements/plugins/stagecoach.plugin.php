@@ -113,7 +113,7 @@ switch($modx->event->name) {
             /* Don't set these fields */
             unset($fields['id'], $fields['pagetitle'], $fields['publishedon'], $fields['alias'], $fields['published'], $fields['hidemenu'], $fields['parent'], $fields['uri']);
             if ($modx->getOption('stagecoach_update_publishedon_date', null, false)) {
-                $modx->resource->set('publishedon', time());
+                $modx->resource->set('publishedon', $date);
             }
             /* Update original resource */
             $modx->resource->fromArray($fields);
