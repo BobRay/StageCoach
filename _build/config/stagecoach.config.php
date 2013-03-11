@@ -16,14 +16,14 @@ $components = array(
     'packageName' => 'StageCoach',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'StageCoach project for MyComponent extra',
-    'version' => '1.0.0',
-    'release' => 'beta1',
+    'version' => '1.0.1',
+    'release' => 'rc',
     'author' => 'Bob Ray',
     'email' => '<http://bobsguides.com>',
     'authorUrl' => 'http://bobsguides.com',
     'authorSiteName' => "Bob's Guides",
     'packageDocumentationUrl' => 'http://bobsguides.com/stagecoach-tutorial.html',
-    'copyright' => '2012',
+    'copyright' => '2012-2013',
 
     /* no need to edit this except to change format */
     'createdon' => strftime('%m-%d-%Y'),
@@ -92,6 +92,33 @@ $components = array(
             'value' => false,
             'area' => 'StageCoach',
         ),
+        'stagecoach_update_publishedon_date' => array(
+            'key' => 'stagecoach_update_publishedon_date',
+            'name' => 'StageCoach Update Published On Date',
+            'description' => 'If set, the Published On date of the original resource will be updated to the Stage Date',
+            'namespace' => 'stagecoach',
+            'xtype' => 'combo-boolean',
+            'value' => false,
+            'area' => 'StageCoach',
+        ),
+        'stagecoach_stage_date_tv_id' => array(
+            'key' => 'stagecoach_stage_date_tv_id',
+            'name' => 'StageCoach Stage Date TV ID',
+            'description' => 'ID of the StageDate TV',
+            'namespace' => 'stagecoach',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'StageCoach',
+        ),
+        'stagecoach_staged_resource_tv_id' => array(
+            'key' => 'stagecoach_staged_resource_tv_id',
+            'name' => 'StageCoach Staged Resource ID',
+            'description' => 'ID of the Staged Resource TV',
+            'namespace' => 'stagecoach',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'StageCoach',
+        ),
     ),
 
        /* ************************ NAMESPACE(S) ************************* */
@@ -157,7 +184,7 @@ $components = array(
                         'priority' => '0', /* priority of the event -- 0 is highest priority */
                         'group' => 'plugins', /* should generally be set to 'plugins' */
                     ),
-                    'OnLoadWebDocument' => array(
+                    'OnWebPageInit' => array(
                         'priority' => '0',
                         'group' => 'plugins',
                     ),
@@ -335,7 +362,7 @@ $components = array(
 
     /* ******************** LEXICON HELPER SETTINGS ***************** */
     /* These settings are used by LexiconHelper */
-    'rewriteCodeFiles' => false,
+    'rewriteCodeFiles' => true,
     /*# remove ~~descriptions */
     'rewriteLexiconFiles' => true,
     /* automatically add missing strings to lexicon files */

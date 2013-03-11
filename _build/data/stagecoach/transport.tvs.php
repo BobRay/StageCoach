@@ -2,8 +2,8 @@
 /**
  * templateVars transport file for StageCoach extra
  *
- * Copyright 2012 by Bob Ray <http://bobsguides.com>
- * Created on 12-24-2012
+ * Copyright 2012-2013 by Bob Ray <http://bobsguides.com>
+ * Created on 03-05-2013
  *
  * @package stagecoach
  * @subpackage build
