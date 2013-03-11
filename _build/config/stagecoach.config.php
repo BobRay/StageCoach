@@ -16,7 +16,7 @@ $components = array(
     'packageName' => 'StageCoach',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'StageCoach project for MyComponent extra',
-    'version' => '1.0.1',
+    'version' => '1.0.2',
     'release' => 'rc',
     'author' => 'Bob Ray',
     'email' => '<http://bobsguides.com>',
@@ -204,7 +204,7 @@ $components = array(
                     'default' => 1,
                 ),
             ),
-            'StageDate' => array(
+            'StageID' => array(
                 'category' => 'StageCoach',
                 'description' => 'ID of staged Resource (set automatically)',
                 'caption' => 'Stage ID',

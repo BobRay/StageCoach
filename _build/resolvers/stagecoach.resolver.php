@@ -36,7 +36,7 @@ if ($object->xpdo) {
                 $pluginId = $plugin->get('id');
                 $pluginEvent = $modx->getObject('modPluginEvent', array(
                        'pluginid' => $pluginId,
-                       'event' => 'OnWebPageInit',
+                       'event' => 'OnLoadWebDocument',
                   ));
                 if ($pluginEvent) {
                     $pluginEvent->remove();
