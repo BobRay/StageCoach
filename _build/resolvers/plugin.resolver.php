@@ -2,8 +2,8 @@
 /**
 * Resolver to connect plugins to system events for StageCoach extra
 *
-* Copyright 2012 by Bob Ray <http://bobsguides.com>
-* Created on 12-24-2012
+* Copyright 2012-2013 by Bob Ray <http://bobsguides.com>
+* Created on 03-05-2013
 *
  * StageCoach is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -77,7 +77,7 @@ if ($object->xpdo) {
                 ),
                 1 =>  array (
                   'pluginid' => 'StageCoach',
-                  'event' => 'OnLoadWebDocument',
+                  'event' => 'OnWebPageInit',
                   'priority' => '0',
                   'propertyset' => '0',
                 ),

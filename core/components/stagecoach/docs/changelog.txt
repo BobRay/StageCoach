@@ -1,5 +1,9 @@
 Changelog for StageCoach
 
+StageCoach 1.0.1-rc
+---------------------------------
+Fixed bug with menuindex
+
 StageCoach 1.0.0
 ---------------------------------
 Initial Version
