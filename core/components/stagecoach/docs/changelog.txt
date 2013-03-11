@@ -1,8 +1,12 @@
 Changelog for StageCoach
 
-StageCoach 1.0.1-rc
+StageCoach 1.1.0-rc
 ---------------------------------
 Fixed bug with menuindex
+Refactored to use OnWebPageInit
+Works with Cached resources
+Added option to update publishedon date
+Bug fixes and improvements
 
 StageCoach 1.0.0
 ---------------------------------

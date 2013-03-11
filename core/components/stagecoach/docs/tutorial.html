@@ -1,5 +1,9 @@
 <p>For new Resources in MODX, you can set a future publication date so that the new content won't appear until that date, but sometimes you want to stage changes to an existing Resource and not have the changes appear until a future date. That's exactly what StageCoach does for you.</p>
 
+<div class="box">
+    <p>As of Version 1.1.0-pl, StageCoach has been refactored to work more reliably with cached Resources.</p>
+</div>
+
 <p>StageCoach creates a &quot;staged&quot; version of the Resource that will replace the original at the specified date and time. All you need to do is set the date in the &quot;Stage Date&quot; TV.</p>
 
 <p>(Jump to <a href="[[~[[*id]]]]#settingsTable">System Settings Table</a>.)</p>
@@ -19,10 +23,11 @@ Go to System | Package Management on the main menu in the MODX Manager and click
 
 <p>You can also edit the original Resource if you like, but be sure the Stage Date TV is not set (it should be unset automatically), or StageCoach will attempt to save another staged Resource.</p>
 
-<p>If you decide to change the Stage Date, just edit the Stage Date TV of the original Resource. StageCoach will rename the staged Resource to reflect the new date. Be sure *not* to edit the Stage ID TV. It must remain unchanged.</p>
+<p>If you decide to change the Stage Date, just edit the Stage Date TV of the original Resource. StageCoach will rename the staged Resource to reflect the new date.</p>
 
-<p>The StageCoach TVs will be attached automatically to the Site's default Template, but you can disconnect them if no Resources to be
-staged use that Template. Be sure to attach the StageCoach TVs to any other Templates used by Resources you want to stage.</p>
+<p>Be sure *not* to edit the Stage ID TV. It must remain unchanged. You may want to hide that TV with a Form Customization rule, though if there is an error in updating the resource, it's possible that you would have to empty it manually to stage that resource in the future. In that case, you could temporarily disable the Form Customization rule.</p>
+
+<p>The two StageCoach TVs will be attached automatically to the Site's default Template, but you can disconnect them if no Resources to be staged use that Template. Be sure to attach the StageCoach TVs to any other Templates used by Resources you want to stage.</p>
 
 
 <p>If the <fixedpre>stagecoach_archive_original</fixedpre> System Setting is set to <fixedpre>Yes</fixedpre>, before updating the original Resource, StageCoach will save a copy of it in the Archived Resources folder. StageCoach doesn't use the archived Resources for anything so you can delete them at will (or not have them at all).</p>
@@ -72,6 +77,17 @@ staged use that Template. Be sure to attach the StageCoach TVs to any other Temp
         <td>If set, the Published On date of the original resource will be updated to the Stage Date</td>
         <td>false</td>
     </tr>
+    <tr>
+        <td>stagecoach_stage_date_tv_id</td>
+        <td>ID of the StageDate TV</td>
+        <td>(set automatically)</td>
+    </tr>
+    <tr>
+        <td>stagecoach_staged_resource_tv_id</td>
+        <td>ID of the Staged Resource ID TV</td>
+        <td>(set automatically)</td>
+    </tr>
+
 </table>
 
 <p>&nbsp;</p>
