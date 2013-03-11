@@ -2,8 +2,8 @@
 /**
  * systemSettings transport file for StageCoach extra
  *
- * Copyright 2012 by Bob Ray <http://bobsguides.com>
- * Created on 12-24-2012
+ * Copyright 2012-2013 by Bob Ray <http://bobsguides.com>
+ * Created on 03-05-2013
  *
  * @package stagecoach
  * @subpackage build
@@ -57,15 +57,28 @@ $systemSettings[4]->fromArray(array(
     'namespace' => 'stagecoach',
     'area' => 'StageCoach',
 ), '', true, true);
-
 $systemSettings[5] = $modx->newObject('modSystemSetting');
 $systemSettings[5]->fromArray(array(
-   'key' => 'stagecoach_update_publishedon_date',
-   'value' => false,
-   'xtype' => 'combo-boolean',
-   'namespace' => 'stagecoach',
-   'area' => 'StageCoach',
+    'key' => 'stagecoach_update_publishedon_date',
+    'value' => false,
+    'xtype' => 'combo-boolean',
+    'namespace' => 'stagecoach',
+    'area' => 'StageCoach',
 ), '', true, true);
-
-
+$systemSettings[6] = $modx->newObject('modSystemSetting');
+$systemSettings[6]->fromArray(array(
+    'key' => 'stagecoach_stage_date_tv_id',
+    'value' => '',
+    'xtype' => 'textfield',
+    'namespace' => 'stagecoach',
+    'area' => 'StageCoach',
+), '', true, true);
+$systemSettings[7] = $modx->newObject('modSystemSetting');
+$systemSettings[7]->fromArray(array(
+    'key' => 'stagecoach_staged_resource_tv_id',
+    'value' => '',
+    'xtype' => 'textfield',
+    'namespace' => 'stagecoach',
+    'area' => 'StageCoach',
+), '', true, true);
 return $systemSettings;

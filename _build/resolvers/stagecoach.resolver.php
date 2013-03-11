@@ -29,8 +29,22 @@
 if ($object->xpdo) {
     $modx =& $object->xpdo;
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
+            /* remove connection to OnWebPageInit */
+            $plugin = $modx->getObject('modPlugin', array('name' => 'StageCoach'));
+            if ($plugin) {
+                $pluginId = $plugin->get('id');
+                $pluginEvent = $modx->getObject('modPluginEvent', array(
+                       'pluginid' => $pluginId,
+                       'event' => 'OnWebPageInit',
+                  ));
+                if ($pluginEvent) {
+                    $pluginEvent->remove();
+                }
+            }
+            /* intentional fall-through */
+        case xPDOTransport::ACTION_INSTALL:
+
             $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_resource_id'));
             $res = $modx->getObject('modResource', array('alias' => 'staged-resources'));
             if ($res && $setting) {
@@ -49,9 +63,23 @@ if ($object->xpdo) {
                 $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_archive_id System Setting');
             }
 
+        $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_stage_date_tv_id'));
+        $tv = $modx->getObject('modTemplateVar', array('name' => 'StageDate'));
+        if ($tv && $setting) {
+            $setting->set('value', $tv->get('id'));
+            $setting->save();
+         } else {
+            $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_stage_date_tv_id System Setting');
+        }
 
-
-
+        $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_staged_resource_tv_id'));
+        $tv = $modx->getObject('modTemplateVar', array('name' => 'StageID'));
+        if ($tv && $setting) {
+            $setting->set('value', $tv->get('id'));
+            $setting->save();
+        } else {
+            $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_staged_resource_tv_id System Setting');
+        }
             break;
 
         case xPDOTransport::ACTION_UNINSTALL:
