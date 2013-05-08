@@ -36,6 +36,11 @@
  **/
 
 $doDebug = false;
+if ((!isset($modx)) || (!$modx instanceof modX)) {
+    return '';
+}
+
+$modx->getService('lexicon', 'modLexicon');
 $modx->lexicon->load('stagecoach:default');
 
 if (!function_exists("my_debug")) {
