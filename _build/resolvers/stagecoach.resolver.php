@@ -51,7 +51,7 @@ if ($object->xpdo) {
                 $setting->set('value', $res->get('id'));
                 $setting->save();
             } else {
-                $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_resource_id System Setting');
+                $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_resource_id System Setting');
             }
 
             $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_archive_id'));
@@ -60,7 +60,7 @@ if ($object->xpdo) {
                 $setting->set('value', $res->get('id'));
                 $setting->save();
             } else {
-                $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_archive_id System Setting');
+                $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_archive_id System Setting');
             }
 
         $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_stage_date_tv_id'));
@@ -69,7 +69,7 @@ if ($object->xpdo) {
             $setting->set('value', $tv->get('id'));
             $setting->save();
          } else {
-            $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_stage_date_tv_id System Setting');
+            $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_stage_date_tv_id System Setting');
         }
 
         $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_staged_resource_tv_id'));
@@ -78,7 +78,7 @@ if ($object->xpdo) {
             $setting->set('value', $tv->get('id'));
             $setting->save();
         } else {
-            $modx->log(MODX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_staged_resource_tv_id System Setting');
+            $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_staged_resource_tv_id System Setting');
         }
             break;
 

@@ -34,7 +34,7 @@ if (!function_exists('checkFields')) {
         $fields = explode(',', $required);
         foreach ($fields as $field) {
             if (!isset($objectFields[$field])) {
-                $modx->log(MODX::LOG_LEVEL_ERROR, '[TV Resolver] Missing field: ' . $field);
+                $modx->log(modX::LOG_LEVEL_ERROR, '[TV Resolver] Missing field: ' . $field);
                 return false;
             }
         }

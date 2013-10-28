@@ -71,18 +71,18 @@ switch ($modx->event->name) {
     case 'OnWebPageInit':
         $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
         if (empty($stageDateTvId)) {
-            $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] StageDate  System Setting is empty');
+            $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] StageDate  System Setting is empty');
             return '';
         }
         $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
         if (empty($stagedResourceTvId)) {
-            $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] StageID System Setting is empty');
+            $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] StageID System Setting is empty');
             return '';
         }
 
         $resourceId = $modx->resourceIdentifier;
         if (empty($resourceId)) {
-            $modx->log(MODX::LOG_LEVEL_ERROR,
+            $modx->log(modX::LOG_LEVEL_ERROR,
                 '[StageCoach] Resource ID is empty');
             return '';
         }
@@ -113,13 +113,13 @@ switch ($modx->event->name) {
               ));
 
             if (!$tvr) {
-                $modx->log(MODX::LOG_LEVEL_ERROR,
+                $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] . No StageID templateVarTemplate');
                 return;
             }
             $stageId = $tvr->get('value');
             if (empty($stageId)) {
-                $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] StageID TV is empty');
+                $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] StageID TV is empty');
             } else {
                 if ($doDebug) {
                     my_debug('StageID TV value: ' . $stageId);
@@ -128,13 +128,13 @@ switch ($modx->event->name) {
 
             $stagedResource = $modx->getObject('modResource', $stageId);
             if (!$stagedResource) {
-                $modx->log(MODX::LOG_LEVEL_ERROR,
+                $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Staged Resource');
             }
 
             $originalResource = $modx->getObject('modResource', $resourceId);
             if (!$originalResource) {
-                $modx->log(MODX::LOG_LEVEL_ERROR,
+                $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Original Resource');
             }
             if ($doDebug) {
@@ -150,7 +150,9 @@ switch ($modx->event->name) {
                         'publishMode' => 'unpublish',
                         'parent' => $archiveFolder,
                         'newName' => $stagedResource->get('pagetitle') . '-' . 'Archived',
+                        'duplicateChildren' => false,
                     );
+
                     /* @var $archivedResource modResource */
                     $archivedResource = $originalResource->duplicate($params);
 
@@ -231,11 +233,11 @@ switch ($modx->event->name) {
             /* remove staged Resource if original was saved */
             if ($success) {
                 if (! $stagedResource->remove()) {
-                    $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] Failed to remove staged resource');
+                    $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Failed to remove staged resource');
                 }
 
             } else {
-                $modx->log(MODX::LOG_LEVEL_ERROR, '[StageCoach] Could not save original resource');
+                $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Could not save original resource');
             }
         }
         return '';
@@ -295,6 +297,7 @@ switch ($modx->event->name) {
             'newName' => $pt,
             'publishMode' => 'unpublish',
             'parent' => $stageFolder,
+            'duplicateChildren' => false,
         );
 
         /* duplicate and save the staged Resource */
