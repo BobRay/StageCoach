@@ -26,35 +26,45 @@ if (! function_exists('stripPhpTags')) {
 $templateVars = array();
 
 $templateVars[1] = $modx->newObject('modTemplateVar');
-$templateVars[1]->fromArray(array(
-    'id' => '1',
-    'property_preprocess' => '',
-    'type' => 'date',
-    'name' => 'StageDate',
-    'caption' => 'Stage Date',
-    'description' => 'Date Resource will be updated',
-    'elements' => '',
-    'rank' => '0',
-    'display' => '',
-    'default_text' => '',
-    'properties' => '',
-    'input_properties' => array(),
-    'output_properties' => array(),
+$templateVars[1]->fromArray(array (
+  'id' => 1,
+  'property_preprocess' => false,
+  'type' => 'date',
+  'name' => 'StageDate',
+  'caption' => 'Stage Date',
+  'description' => 'Date Resource will be updated',
+  'elements' => '',
+  'rank' => 0,
+  'display' => '',
+  'default_text' => '',
+  'properties' => NULL,
+  'input_properties' => 
+  array (
+  ),
+  'output_properties' => 
+  array (
+  ),
 ), '', true, true);
 $templateVars[2] = $modx->newObject('modTemplateVar');
-$templateVars[2]->fromArray(array(
-    'id' => '2',
-    'property_preprocess' => '',
-    'type' => 'textfield',
-    'name' => 'StageID',
-    'caption' => 'Stage ID',
-    'description' => 'ID of staged Resource (set automatically)',
-    'elements' => '',
-    'rank' => '1',
-    'display' => 'default',
-    'default_text' => '',
-    'properties' => array(),
-    'input_properties' => array(),
-    'output_properties' => array(),
+$templateVars[2]->fromArray(array (
+  'id' => 2,
+  'property_preprocess' => false,
+  'type' => 'textfield',
+  'name' => 'StageID',
+  'caption' => 'Stage ID',
+  'description' => 'ID of staged Resource (set automatically)',
+  'elements' => '',
+  'rank' => 1,
+  'display' => 'default',
+  'default_text' => '',
+  'properties' => 
+  array (
+  ),
+  'input_properties' => 
+  array (
+  ),
+  'output_properties' => 
+  array (
+  ),
 ), '', true, true);
 return $templateVars;

@@ -26,13 +26,15 @@ if (! function_exists('stripPhpTags')) {
 $plugins = array();
 
 $plugins[1] = $modx->newObject('modPlugin');
-$plugins[1]->fromArray(array(
-    'id' => '1',
-    'property_preprocess' => '',
-    'name' => 'StageCoach',
-    'description' => 'Stages Resources for future update',
-    'properties' => array(),
-    'disabled' => '',
+$plugins[1]->fromArray(array (
+  'id' => 1,
+  'property_preprocess' => false,
+  'name' => 'StageCoach',
+  'description' => 'Stages Resources for future update',
+  'properties' => 
+  array (
+  ),
+  'disabled' => false,
 ), '', true, true);
 $plugins[1]->setContent(file_get_contents($sources['source_core'] . '/elements/plugins/stagecoach.plugin.php'));
 
