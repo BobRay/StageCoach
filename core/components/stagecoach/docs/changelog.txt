@@ -1,5 +1,10 @@
 Changelog for StageCoach
 
+StageCoach 1.2.0-pl
+--------------------------
+Corrected MODX constants
+No longer duplicates children
+
 StageCoach 1.1.0-rc
 ---------------------------------
 Fixed bug with menuindex
