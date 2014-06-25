@@ -252,8 +252,16 @@ switch ($modx->event->name) {
             return;
         }
         $stageId = $resource->getTVValue('StageID');
-        $stageFolder = $modx->getOption('stagecoach_resource_id', null, 0);
-        $archiveFolder = $modx->getOption('stagecoach_archive_id', null, 0);
+        $key = $resource->get('context_key');
+        //check if Context Setting exists
+        $stageFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_resource_id')); 
+        //if so use that otherwise use system setting
+        $stageFolder = (empty($stageFolder))?$modx->getOption('stagecoach_resource_id', null, 0):$stageFolder->get('value');
+        
+        //check if Context Setting exists
+        $archiveFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_archive_id')); 
+        //if so use that otherwise use system setting
+        $archiveFolder = (empty($archiveFolder))?$modx->getOption('stagecoach_archive_id', null, 0):$archiveFolder->get('value');
 
         /* Don't execute on staged or archived Resources */
         $thisParent = $modx->resource->get('parent');
