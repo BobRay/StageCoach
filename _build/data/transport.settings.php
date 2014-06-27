@@ -38,7 +38,7 @@ $systemSettings[1]->fromArray(array (
 $systemSettings[2] = $modx->newObject('modSystemSetting');
 $systemSettings[2]->fromArray(array (
   'key' => 'stagecoach_archive_original',
-  'value' => '0',
+  'value' => false,
   'xtype' => 'combo-boolean',
   'namespace' => 'stagecoach',
   'area' => 'StageCoach',
@@ -58,7 +58,7 @@ $systemSettings[3]->fromArray(array (
 $systemSettings[4] = $modx->newObject('modSystemSetting');
 $systemSettings[4]->fromArray(array (
   'key' => 'stagecoach_include_tvs',
-  'value' => '0',
+  'value' => false,
   'xtype' => 'combo-boolean',
   'namespace' => 'stagecoach',
   'area' => 'StageCoach',
@@ -78,7 +78,7 @@ $systemSettings[5]->fromArray(array (
 $systemSettings[6] = $modx->newObject('modSystemSetting');
 $systemSettings[6]->fromArray(array (
   'key' => 'stagecoach_update_publishedon_date',
-  'value' => '0',
+  'value' => false,
   'xtype' => 'combo-boolean',
   'namespace' => 'stagecoach',
   'area' => 'StageCoach',
