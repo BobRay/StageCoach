@@ -1,5 +1,9 @@
 Changelog for StageCoach
 
+StageCoach 1.3.0-pl
+--------------------------
+Update from Mat Dave Jones to allow context-specific staging
+
 StageCoach 1.2.0-pl
 --------------------------
 Corrected MODX constants

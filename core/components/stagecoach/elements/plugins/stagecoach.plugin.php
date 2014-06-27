@@ -253,15 +253,19 @@ switch ($modx->event->name) {
         }
         $stageId = $resource->getTVValue('StageID');
         $key = $resource->get('context_key');
-        //check if Context Setting exists
+        /* Code from Mat Dave Jones to allow
+           context-specific staging */
+
+        /* Check if Context Setting exists */
         $stageFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_resource_id')); 
-        //if so use that otherwise use system setting
+        /* If so use that otherwise use system setting */
         $stageFolder = (empty($stageFolder))?$modx->getOption('stagecoach_resource_id', null, 0):$stageFolder->get('value');
         
-        //check if Context Setting exists
+        /* check if Context Setting exists */
         $archiveFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_archive_id')); 
-        //if so use that otherwise use system setting
+        /* if so use that otherwise use system setting */
         $archiveFolder = (empty($archiveFolder))?$modx->getOption('stagecoach_archive_id', null, 0):$archiveFolder->get('value');
+        /* ************ */
 
         /* Don't execute on staged or archived Resources */
         $thisParent = $modx->resource->get('parent');
