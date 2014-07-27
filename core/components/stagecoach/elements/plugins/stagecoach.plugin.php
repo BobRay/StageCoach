@@ -96,7 +96,7 @@ switch ($modx->event->name) {
         }
         $date = $tvr->get('value');
         if (empty($date)) {
-            return;
+            return '';
         } else {
             if ($doDebug) {
                 my_debug('Date TV content: ' . $date, true);
@@ -115,7 +115,7 @@ switch ($modx->event->name) {
             if (!$tvr) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] . No StageID templateVarTemplate');
-                return;
+                return '';
             }
             $stageId = $tvr->get('value');
             if (empty($stageId)) {
@@ -249,7 +249,7 @@ switch ($modx->event->name) {
 
         /* Don't execute for new resources */
         if ($mode != modSystemEvent::MODE_UPD) {
-            return;
+            return '';
         }
         $stageId = $resource->getTVValue('StageID');
         $key = $resource->get('context_key');
@@ -326,3 +326,5 @@ switch ($modx->event->name) {
         $resource->save(0);
         break;
 }
+
+return '';
