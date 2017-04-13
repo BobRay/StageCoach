@@ -2,7 +2,7 @@
 /**
  * StageCoach plugin for StageCoach extra
  *
- * Copyright 2012-2013 by Bob Ray <http://bobsguides.com>
+ * Copyright 2012-2017 by Bob Ray <https://bobsguides.com>
  * Created on 12-22-2012
  *
  * StageCoach is free software; you can redistribute it and/or modify it under the
@@ -74,12 +74,15 @@ if (!function_exists("my_debug")) {
 switch ($modx->event->name) {
 
     case 'OnDocFormRender': {
+        $siteUrl = $modx->getOption('site_url');
+
         /** @var $resource modResource */
         $button = '';
         /* Get TV ID  and Resource ID*/
-        // $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
+        $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
         $resourceId = $resource->get('id');
-        $stagedResourceTvId = 6972;
+
+        /* See if this resource has a staged resource */
         $c = array(
             'tmplvarid' => $stagedResourceTvId,  /* TV ID */
             'contentid' => $resourceId,  /* Resource ID */
@@ -89,9 +92,10 @@ switch ($modx->event->name) {
         $query->select('value');
         $scId = $modx->getValue($query->prepare());
 
-        if (! empty($scId)) {
-            $button = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location=\'/manager/?a=resource/update&id=' . $scId . '\'">Edit Draft</button><span>';
-        } else {
+        // if (!empty($scId)) { this is an original with a staged resource with ID $scID
+
+        /* If it's not an original, see if this *is* a staged resource */
+        if (empty($scId)) {
             $c = array(
                 'tmplvarid' => $stagedResourceTvId,  /* TV ID */
                 'value' => $resourceId,  /* Resource ID */
@@ -100,13 +104,101 @@ switch ($modx->event->name) {
             $query = $modx->newQuery('modTemplateVarResource', $c);
             $query->select('value');
             $liveId = $modx->getValue($query->prepare());
-            $button = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location=\'/manager/?a=resource/update&id=' . $liveId . '\'">Edit Original</button><span>';
+
+            if ($liveId) {
+                // This is a staged resource - $liveId is the ID of the original
+            }
         }
 
-        if (!empty($button)) {
-            /* Add button to bottom of Create/Edit Resource form */
-            $modx->event->output($button);
+        if (empty($scId) && empty($liveId)) {
+            // No connections - bail out
+            return '';
         }
+        $deleteDraftButton = <<<DELETDRAFTBUTTON
+        row = div[0];
+        var deleteDraftButton = row.insertCell(0);
+        deleteDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
+DELETDRAFTBUTTON;
+
+        $deleteDraftFunction = <<<FNDELETEDRAFT
+        function stagecoachDeleteDraft(id) {
+             //console.log("ID = " + id);
+             MODx.msg.confirm({
+                    text: _('resource_delete_confirm')
+                    ,url: MODx.config.connector_url
+                    ,params: {
+                        action: 'resource/delete'
+                        ,id: id
+                    }
+                    ,listeners: {
+                       success: {fn:function(r) {
+                            if (r.object.deletedCount > 0) {
+                                var trashcan = Ext.getCmp('emptifier');
+                                trashcan.enable();
+                                var rTree = Ext.getCmp('modx-resource-tree');
+                                var nd = rTree.getNodeById('web_' + id);
+                                nd.getUI().addClass('deleted');
+                            }
+                        },scope:this}
+                    }
+                });
+        }
+FNDELETEDRAFT;
+
+        $editDraftButton = <<<EDITDRAFTBUTTON
+        row = div[0];
+        var editDraftButton = row.insertCell(0);
+        editDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button><span>';
+EDITDRAFTBUTTON;
+
+        $editOriginalButton = <<<EDITORIGINALBUTTON
+        row = div[0];
+        var editOriginalButton = row.insertCell(0);
+        editOriginalButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $liveId + '\'">Edit Original</button><span>';
+EDITORIGINALBUTTON;
+
+        $jScript = <<< STAGECOACHJS
+<script type="text/javascript">
+Ext.onReady(function () {
+    // var siteUrl = "$siteUrl";
+    // var scId = $scId;
+
+    var hostdiv = document.getElementById('modx-action-buttons');
+    div = hostdiv.getElementsByClassName("x-toolbar-left-row");
+    if (div) {
+        /* Hidden button is spacer before "Save" button */
+         row = div[0];
+         var dummyButton = row.insertCell(0);
+         dummyButton.innerHTML = '<span style="visibility:hidden" class="x-btn x-btn-small stagecoach-link"><button>Dummy Button' +
+          '</button><span>';
+        
+        /*row = div[0];
+        var deleteDraftButton = row.insertCell(0);
+        deleteDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
+        
+        row = div[0];
+        var editDraftButton = row.insertCell(0);
+        editDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button><span>';*/
+
+        /* Buttons */
+       
+    }
+    });
+
+    /* DeleteDraftFunction */
+</script>
+STAGECOACHJS;
+
+        if (!empty($scId)) {
+            $jScript = str_replace('/* Buttons */', $editDraftButton . $deleteDraftButton, $jScript);
+            $jScript = str_replace('/* DeleteDraftFunction */', $deleteDraftFunction, $jScript);
+        } else {
+            $jScript = str_replace('/* Buttons */', $editOriginalButton , $jScript);
+        }
+
+        $modx->regClientStartupScript($jScript);
+
+
         break;
     }
 
