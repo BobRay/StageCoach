@@ -26,6 +26,8 @@
  * -----------
  * Stages Resources for future update
  *
+ * Plugin should be connected to OnWebPageInit, OnDocFormSave, and OnDocFormRender.
+ *
  * Variables
  * ---------
  * @var $modx modX
@@ -34,6 +36,8 @@
  *
  * @package stagecoach
  **/
+
+
 
 $doDebug = false;
 if ((!isset($modx)) || (!$modx instanceof modX)) {
@@ -68,6 +72,44 @@ if (!function_exists("my_debug")) {
 
 
 switch ($modx->event->name) {
+
+    case 'OnDocFormRender': {
+        /** @var $resource modResource */
+        $button = '';
+        /* Get TV ID  and Resource ID*/
+        // $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
+        $resourceId = $resource->get('id');
+        $stagedResourceTvId = 6972;
+        $c = array(
+            'tmplvarid' => $stagedResourceTvId,  /* TV ID */
+            'contentid' => $resourceId,  /* Resource ID */
+        );
+
+        $query = $modx->newQuery('modTemplateVarResource', $c);
+        $query->select('value');
+        $scId = $modx->getValue($query->prepare());
+
+        if (! empty($scId)) {
+            $button = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location=\'/manager/?a=resource/update&id=' . $scId . '\'">Edit Draft</button><span>';
+        } else {
+            $c = array(
+                'tmplvarid' => $stagedResourceTvId,  /* TV ID */
+                'value' => $resourceId,  /* Resource ID */
+            );
+
+            $query = $modx->newQuery('modTemplateVarResource', $c);
+            $query->select('value');
+            $liveId = $modx->getValue($query->prepare());
+            $button = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location=\'/manager/?a=resource/update&id=' . $liveId . '\'">Edit Original</button><span>';
+        }
+
+        if (!empty($button)) {
+            /* Add button to bottom of Create/Edit Resource form */
+            $modx->event->output($button);
+        }
+        break;
+    }
+
     case 'OnWebPageInit':
         $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
         if (empty($stageDateTvId)) {
