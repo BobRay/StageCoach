@@ -80,6 +80,7 @@ switch ($modx->event->name) {
         $button = '';
         /* Get TV ID  and Resource ID*/
         $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
+        $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
         $resourceId = $resource->get('id');
 
         /* See if this resource has a staged resource */
@@ -139,12 +140,10 @@ DELETDRAFTBUTTON;
                                 var nd = rTree.getNodeById('web_' + id);
                                 nd.getUI().addClass('deleted');
                                 
-                                /* var buttons = document.getElementById("emptifier").getElementsByTagName("button");
-                                buttons[0].click(); */
-                                document.getElementById('tv17').value = '';
-                                MODx.fireResourceFormChange();
-                                document.getElementById('tv18').value = '';
-                                MODx.fireResourceFormChange();
+                                var buttons = document.getElementById("emptifier").getElementsByTagName("button");
+                                buttons[0].click();
+                                document.getElementById('tv{$stagedResourceTvId}').value = '';
+                                document.getElementById('tv{$stageDateTvId}').value = '';
                                 document.getElementById('modx-abtn-save').click();
                                 location.reload(true);
                             }
