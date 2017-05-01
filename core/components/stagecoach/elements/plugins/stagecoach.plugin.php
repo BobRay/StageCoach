@@ -102,7 +102,7 @@ switch ($modx->event->name) {
             );
 
             $query = $modx->newQuery('modTemplateVarResource', $c);
-            $query->select('value');
+            $query->select('contentid');
             $liveId = $modx->getValue($query->prepare());
 
             if ($liveId) {
@@ -166,12 +166,7 @@ Ext.onReady(function () {
     var hostdiv = document.getElementById('modx-action-buttons');
     div = hostdiv.getElementsByClassName("x-toolbar-left-row");
     if (div) {
-        /* Hidden button is spacer before "Save" button */
-         row = div[0];
-         var dummyButton = row.insertCell(0);
-         dummyButton.innerHTML = '<span style="visibility:hidden" class="x-btn x-btn-small stagecoach-link"><button>Dummy Button' +
-          '</button><span>';
-        
+
         /*row = div[0];
         var deleteDraftButton = row.insertCell(0);
         deleteDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
