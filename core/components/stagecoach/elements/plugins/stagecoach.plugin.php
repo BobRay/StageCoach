@@ -138,6 +138,15 @@ DELETDRAFTBUTTON;
                                 var rTree = Ext.getCmp('modx-resource-tree');
                                 var nd = rTree.getNodeById('web_' + id);
                                 nd.getUI().addClass('deleted');
+                                
+                                /* var buttons = document.getElementById("emptifier").getElementsByTagName("button");
+                                buttons[0].click(); */
+                                document.getElementById('tv17').value = '';
+                                MODx.fireResourceFormChange();
+                                document.getElementById('tv18').value = '';
+                                MODx.fireResourceFormChange();
+                                document.getElementById('modx-abtn-save').click();
+                                location.reload(true);
                             }
                         },scope:this}
                     }
