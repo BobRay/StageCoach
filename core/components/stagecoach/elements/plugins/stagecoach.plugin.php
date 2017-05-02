@@ -118,7 +118,7 @@ switch ($modx->event->name) {
         $deleteDraftButton = <<<DELETDRAFTBUTTON
         row = div[0];
         var deleteDraftButton = row.insertCell(0);
-        deleteDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
+        deleteDraftButton.innerHTML = '<span id="stagecoach_button1" class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
 DELETDRAFTBUTTON;
 
         $deleteDraftFunction = <<<FNDELETEDRAFT
@@ -138,14 +138,22 @@ DELETDRAFTBUTTON;
                                 trashcan.enable();
                                 var rTree = Ext.getCmp('modx-resource-tree');
                                 var nd = rTree.getNodeById('web_' + id);
-                                nd.getUI().addClass('deleted');
+                                if (nd) {
+                                    nd.getUI().addClass('deleted');
+                                }
                                 
                                 var buttons = document.getElementById("emptifier").getElementsByTagName("button");
+                                // console.log("buttons: " + buttons);
                                 buttons[0].click();
                                 document.getElementById('tv{$stagedResourceTvId}').value = '';
+                                MODx.fireResourceFormChange();
                                 document.getElementById('tv{$stageDateTvId}').value = '';
+                                MODx.fireResourceFormChange();
                                 document.getElementById('modx-abtn-save').click();
-                                location.reload(true);
+                                
+                                // location.reload(true);
+                                document.getElementById('stagecoach_button1').style.display = 'none';
+                                document.getElementById('stagecoach_button2').style.display = 'none';
                             }
                         },scope:this}
                     }
@@ -156,7 +164,7 @@ FNDELETEDRAFT;
         $editDraftButton = <<<EDITDRAFTBUTTON
         row = div[0];
         var editDraftButton = row.insertCell(0);
-        editDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button><span>';
+        editDraftButton.innerHTML = '<span id="stagecoach_button2" class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button><span>';
 EDITDRAFTBUTTON;
 
         $editOriginalButton = <<<EDITORIGINALBUTTON
@@ -394,12 +402,12 @@ STAGECOACHJS;
            context-specific staging */
 
         /* Check if Context Setting exists */
-        $stageFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_resource_id')); 
+        $stageFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_resource_id'));
         /* If so use that otherwise use system setting */
         $stageFolder = (empty($stageFolder))?$modx->getOption('stagecoach_resource_id', null, 0):$stageFolder->get('value');
-        
+
         /* check if Context Setting exists */
-        $archiveFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_archive_id')); 
+        $archiveFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_archive_id'));
         /* if so use that otherwise use system setting */
         $archiveFolder = (empty($archiveFolder))?$modx->getOption('stagecoach_archive_id', null, 0):$archiveFolder->get('value');
         /* ************ */
@@ -461,6 +469,7 @@ STAGECOACHJS;
         $newId = $stagedResource->get('id');
         $resource->setTVValue('stageID', $newId);
         $resource->save(0);
+
         break;
 }
 
