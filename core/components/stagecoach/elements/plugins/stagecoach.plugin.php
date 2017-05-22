@@ -38,7 +38,6 @@
  **/
 
 
-
 $doDebug = false;
 if ((!isset($modx)) || (!$modx instanceof modX)) {
     return '';
@@ -70,18 +69,47 @@ if (!function_exists("my_debug")) {
     }
 }
 
+/** @var $resource modResource */
+
+if ($resource->get('deleted')) {
+    return '';
+}
 
 switch ($modx->event->name) {
 
     case 'OnDocFormRender': {
         $siteUrl = $modx->getOption('site_url');
 
-        /** @var $resource modResource */
+
         $button = '';
         /* Get TV ID  and Resource ID*/
         $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
         $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
         $resourceId = $resource->get('id');
+
+        $modx->regClientStartupHTMLBlock('
+            <script type="text/javascript">
+                    Ext.override(MODx.panel.Resource, {
+                        originalSuccess: MODx.panel.Resource.prototype.success
+                        ,success: function(o) {
+                            this.originalSuccess(o);
+        
+                            var stageDateTv = document.getElementById("tv' . $stageDateTvId . '").value;
+                            var stagedResourceTv = document.getElementById("tv' . $stagedResourceTvId . '").value;
+                            
+                            if (!!stageDateTv && (!stagedResourceTv || !stagedResourceTv.length) ) {
+                                var url = location.href, i = url.indexOf("?") + 3;
+                              /*  MODx.loadPage(url.substr(i));*/
+                                console.log(" Original HREF: " + location.href);
+                                console.log("Converted HREF: " + url.substr(i));
+                                // console.log("StageDateTV: " + stageDateTv);
+                                // console.log("StagedResourceTV: " + stagedResourceTv);
+                            }    
+        
+                        }
+                    });
+            </script>
+    ');
 
         /* See if this resource has a staged resource */
         $c = array(
@@ -93,7 +121,16 @@ switch ($modx->event->name) {
         $query->select('value');
         $scId = $modx->getValue($query->prepare());
 
-        // if (!empty($scId)) { this is an original with a staged resource with ID $scID
+        if (!empty($scId)) { // this is an original with a staged resource with ID $scId
+            /* Bail if staged resource is deleted or removed */
+            $c = array('id' => $scId, 'deleted' => '0');
+            if (! $modx->getCount('modResource', $c)) {
+                $resource->setTVValue($stagedResourceTvId, '');
+                $resource->setTVValue($stageDateTvId, '');
+                return '';
+            }
+
+        }
 
         /* If it's not an original, see if this *is* a staged resource */
         if (empty($scId)) {
@@ -124,53 +161,72 @@ DELETDRAFTBUTTON;
         $deleteDraftFunction = <<<FNDELETEDRAFT
         function stagecoachDeleteDraft(id) {
              //console.log("ID = " + id);
-             MODx.msg.confirm({
-                    text: _('resource_delete_confirm')
-                    ,url: MODx.config.connector_url
-                    ,params: {
-                        action: 'resource/delete'
-                        ,id: id
-                    }
-                    ,listeners: {
-                       success: {fn:function(r) {
-                            if (r.object.deletedCount > 0) {
-                                var trashcan = Ext.getCmp('emptifier');
-                                trashcan.enable();
-                                var rTree = Ext.getCmp('modx-resource-tree');
-                                var nd = rTree.getNodeById('web_' + id);
-                                if (nd) {
-                                    nd.getUI().addClass('deleted');
-                                }
-                                
-                                var buttons = document.getElementById("emptifier").getElementsByTagName("button");
-                                // console.log("buttons: " + buttons);
-                                buttons[0].click();
-                                document.getElementById('tv{$stagedResourceTvId}').value = '';
-                                MODx.fireResourceFormChange();
-                                document.getElementById('tv{$stageDateTvId}').value = '';
-                                MODx.fireResourceFormChange();
-                                document.getElementById('modx-abtn-save').click();
-                                
-                                // location.reload(true);
-                                document.getElementById('stagecoach_button1').style.display = 'none';
-                                document.getElementById('stagecoach_button2').style.display = 'none';
-                            }
-                        },scope:this}
-                    }
-                });
+            MODx.msg.confirm({
+        text: _('resource_delete_confirm')
+        , url: MODx.config.connector_url
+        , params: {
+            action: 'resource/delete'
+            , id: id
         }
+        , listeners: {
+            success: {
+                fn: function (r) {
+                    if (r.object.deletedCount > 0) { // successfully deleted staged resource
+                        /* Enable empty trash icon */
+                        var trashcan = Ext.getCmp('emptifier');
+                        if (trashcan !== 0[0]) {
+                            trashcan.enable();
+                            //   console.log('trashcan enabled');
+
+                        }
+
+                        /* Add overstrike in tree
+
+                         var rTree = Ext.getCmp('modx-resource-tree');
+                         var nd = rTree.getNodeById('web_' + id);
+                         if (nd) {
+                         nd.getUI().addClass('deleted');
+                         }
+
+                         */
+
+
+                        document.getElementById('tv{$stagedResourceTvId}').value = '';
+                        MODx.fireResourceFormChange();
+                        document.getElementById('tv{$stageDateTvId}').value = '';
+                        MODx.fireResourceFormChange();
+
+                        document.getElementById("tv{$stageDateTvId}-tr").getElementsByTagName("td")[0].getElementsByTagName("input")[0].value = "";
+                        document.getElementById("tv{$stageDateTvId}-tr").getElementsByTagName("td")[1].getElementsByTagName("input")[0].value = "";
+
+                        document.getElementById('modx-abtn-save').click();
+
+                        document.getElementById('stagecoach_button1').style.display = 'none';
+                        document.getElementById('stagecoach_button2').style.display = 'none';
+
+                        // var url = location.href, i = url.indexOf("?") + 3;
+                        // MODx.loadPage(url.substr(i));
+                    }
+                }, scope: this
+            }
+        }
+    });
+    
+
+}
+
 FNDELETEDRAFT;
 
         $editDraftButton = <<<EDITDRAFTBUTTON
         row = div[0];
         var editDraftButton = row.insertCell(0);
-        editDraftButton.innerHTML = '<span id="stagecoach_button2" class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button><span>';
+        editDraftButton.innerHTML = '<span id="stagecoach_button2" class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button></span>';
 EDITDRAFTBUTTON;
 
         $editOriginalButton = <<<EDITORIGINALBUTTON
         row = div[0];
         var editOriginalButton = row.insertCell(0);
-        editOriginalButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $liveId + '\'">Edit Original</button><span>';
+        editOriginalButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $liveId + '\'">Edit Original</button></span>';
 EDITORIGINALBUTTON;
 
         $jScript = <<< STAGECOACHJS
@@ -181,18 +237,9 @@ Ext.onReady(function () {
 
     var hostdiv = document.getElementById('modx-action-buttons');
     div = hostdiv.getElementsByClassName("x-toolbar-left-row");
+
     if (div) {
-
-        /*row = div[0];
-        var deleteDraftButton = row.insertCell(0);
-        deleteDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
-        
-        row = div[0];
-        var editDraftButton = row.insertCell(0);
-        editDraftButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button><span>';*/
-
         /* Buttons */
-       
     }
     });
 
@@ -204,7 +251,7 @@ STAGECOACHJS;
             $jScript = str_replace('/* Buttons */', $editDraftButton . $deleteDraftButton, $jScript);
             $jScript = str_replace('/* DeleteDraftFunction */', $deleteDraftFunction, $jScript);
         } else {
-            $jScript = str_replace('/* Buttons */', $editOriginalButton , $jScript);
+            $jScript = str_replace('/* Buttons */', $editOriginalButton, $jScript);
         }
 
         $modx->regClientStartupScript($jScript);
@@ -233,9 +280,9 @@ STAGECOACHJS;
         }
 
         $tvr = $modx->getObject('modTemplateVarResource', array(
-           'contentid' => $resourceId,
-           'tmplvarid' => $stageDateTvId,
-          ));
+            'contentid' => $resourceId,
+            'tmplvarid' => $stageDateTvId,
+        ));
         if (!$tvr) {
             return '';
         }
@@ -253,9 +300,9 @@ STAGECOACHJS;
             return '';
         } else { /* It's time to update the Resource */
             $tvr = $modx->getObject('modTemplateVarResource', array(
-                   'contentid' => $resourceId,
-                   'tmplvarid' => $stagedResourceTvId,
-              ));
+                'contentid' => $resourceId,
+                'tmplvarid' => $stagedResourceTvId,
+            ));
 
             if (!$tvr) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
@@ -270,11 +317,14 @@ STAGECOACHJS;
                     my_debug('StageID TV value: ' . $stageId);
                 }
             }
-
             $stagedResource = $modx->getObject('modResource', $stageId);
             if (!$stagedResource) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Staged Resource');
+            }
+
+            if ($stagedResource->get('deleted')) {
+                return '';
             }
 
             $originalResource = $modx->getObject('modResource', $resourceId);
@@ -377,7 +427,7 @@ STAGECOACHJS;
             }
             /* remove staged Resource if original was saved */
             if ($success) {
-                if (! $stagedResource->remove()) {
+                if (!$stagedResource->remove()) {
                     $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Failed to remove staged resource');
                 }
 
@@ -391,6 +441,7 @@ STAGECOACHJS;
     case 'OnDocFormSave':
         /* Create staged Resource if Stage Date TV is set */
         /* @var $oldTv modTemplateVar */
+        /* @var $resource modResource */
 
         /* Don't execute for new resources */
         if ($mode != modSystemEvent::MODE_UPD) {
@@ -402,14 +453,14 @@ STAGECOACHJS;
            context-specific staging */
 
         /* Check if Context Setting exists */
-        $stageFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_resource_id'));
+        $stageFolder = $modx->getObject('modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_resource_id'));
         /* If so use that otherwise use system setting */
-        $stageFolder = (empty($stageFolder))?$modx->getOption('stagecoach_resource_id', null, 0):$stageFolder->get('value');
+        $stageFolder = (empty($stageFolder)) ? $modx->getOption('stagecoach_resource_id', null, 0) : $stageFolder->get('value');
 
         /* check if Context Setting exists */
-        $archiveFolder = $modx->getObject('modContextSetting',array('context_key'=>$key,'key'=>'stagecoach_archive_id'));
+        $archiveFolder = $modx->getObject('modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_archive_id'));
         /* if so use that otherwise use system setting */
-        $archiveFolder = (empty($archiveFolder))?$modx->getOption('stagecoach_archive_id', null, 0):$archiveFolder->get('value');
+        $archiveFolder = (empty($archiveFolder)) ? $modx->getOption('stagecoach_archive_id', null, 0) : $archiveFolder->get('value');
         /* ************ */
 
         /* Don't execute on staged or archived Resources */
