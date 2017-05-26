@@ -99,9 +99,9 @@ switch ($modx->event->name) {
                             
                             if (!!stageDateTv && (!stagedResourceTv || !stagedResourceTv.length) ) {
                                 var url = location.href, i = url.indexOf("?") + 3;
-                              /*  MODx.loadPage(url.substr(i));*/
-                                console.log(" Original HREF: " + location.href);
-                                console.log("Converted HREF: " + url.substr(i));
+                                MODx.loadPage(url.substr(i));
+                                // console.log(" Original HREF: " + location.href);
+                                // console.log("Converted HREF: " + url.substr(i));
                                 // console.log("StageDateTV: " + stageDateTv);
                                 // console.log("StagedResourceTV: " + stagedResourceTv);
                             }    
