@@ -62,3 +62,4 @@ $_lang['setting_stagecoach_update_publishedon_date_desc'] = 'If set, the Publish
 
 /* used in StageCoach or its included classes  */
 $_lang['stagecoach_no_resource'] = 'No staged Resource found with ID';
+$_lang['stagecoach_delete_confirm'] = 'Are you sure you want to delete the staged resource?';

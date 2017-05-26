@@ -46,6 +46,8 @@ if ((!isset($modx)) || (!$modx instanceof modX)) {
 $modx->getService('lexicon', 'modLexicon');
 $modx->lexicon->load('stagecoach:default');
 
+$stageCoachConfirmDelete = $modx->lexicon('stagecoach_delete_confirm');
+
 if (!function_exists("my_debug")) {
     function my_debug($message, $clear = false) {
         global $modx;
@@ -162,7 +164,7 @@ DELETDRAFTBUTTON;
         function stagecoachDeleteDraft(id) {
              //console.log("ID = " + id);
             MODx.msg.confirm({
-        text: _('resource_delete_confirm')
+        text: '$stageCoachConfirmDelete'
         , url: MODx.config.connector_url
         , params: {
             action: 'resource/delete'
