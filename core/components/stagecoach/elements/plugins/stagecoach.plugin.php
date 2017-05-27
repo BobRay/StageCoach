@@ -39,6 +39,8 @@
 
 
 $doDebug = false;
+
+/* Don't execute outside of MODX */
 if ((!isset($modx)) || (!$modx instanceof modX)) {
     return '';
 }
@@ -73,7 +75,12 @@ if (!function_exists("my_debug")) {
 
 /** @var $resource modResource */
 
-if ($resource->get('deleted')) {
+/* Bail if new resource is being created */
+if (isset($mode) && ($mode === modSystemEvent::MODE_NEW)) {
+    return '';
+}
+
+if (isset($resource) && $resource instanceof modResource && $resource->get('deleted')) {
     return '';
 }
 
@@ -320,9 +327,8 @@ STAGECOACHJS;
             if (!$stagedResource) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Staged Resource');
-            }
-
-            if ($stagedResource->get('deleted')) {
+                return '';
+            } elseif ($stagedResource->get('deleted')) {
                 return '';
             }
 
@@ -361,7 +367,7 @@ STAGECOACHJS;
             $fields = $stagedResource->toArray();
             $originalFields = $originalResource->toArray();
             if ($doDebug) {
-                my_debug('toArrays done');
+                my_debug('toArray done');
             }
             /* Don't set these fields */
             unset($fields['id'], $fields['menuindex'], $fields['pagetitle'], $fields['publishedon'], $fields['alias'], $fields['published'], $fields['createdon'], $fields['hidemenu'], $fields['parent'], $fields['uri']);
