@@ -178,18 +178,14 @@ DELETDRAFTBUTTON;
                         var trashcan = Ext.getCmp('emptifier');
                         if (trashcan !== 0[0]) {
                             trashcan.enable();
-                            //   console.log('trashcan enabled');
-
                         }
 
-                        /* Add overstrike in tree
-
-                         var rTree = Ext.getCmp('modx-resource-tree');
-                         var nd = rTree.getNodeById('web_' + id);
-                         if (nd) {
-                         nd.getUI().addClass('deleted');
-                         }
-
+                        /* Add overstrike in tree (might need this in the future)
+                             var rTree = Ext.getCmp('modx-resource-tree');
+                             var nd = rTree.getNodeById('web_' + id);
+                             if (nd) {
+                             nd.getUI().addClass('deleted');
+                             }
                          */
 
 
@@ -206,8 +202,9 @@ DELETDRAFTBUTTON;
                         document.getElementById('stagecoach_button1').style.display = 'none';
                         document.getElementById('stagecoach_button2').style.display = 'none';
 
-                        // var url = location.href, i = url.indexOf("?") + 3;
-                        // MODx.loadPage(url.substr(i));
+                        /* Reload page (no longer used) */
+                            // var url = location.href, i = url.indexOf("?") + 3;
+                            // MODx.loadPage(url.substr(i));
                     }
                 }, scope: this
             }
@@ -385,7 +382,6 @@ STAGECOACHJS;
             }
 
             $success = $originalResource->save(0);
-            // $modx->reloadContext('web');
 
             $cKey = $originalResource->get('context_key');
             $modx->cacheManager->refresh(
@@ -397,6 +393,7 @@ STAGECOACHJS;
                 )
             );
 
+            /* See if we need to transfer TV values from the staged resource */
             $includeTvs = $modx->getOption('stagecoach_include_tvs', null, false);
             /* Transfer TV values if option is set */
             if ($includeTvs) {
@@ -427,7 +424,7 @@ STAGECOACHJS;
                     }
                 }
             }
-            /* remove staged Resource if original was saved */
+            /* Remove staged Resource if original was saved successfully */
             if ($success) {
                 if (!$stagedResource->remove()) {
                     $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Failed to remove staged resource');
