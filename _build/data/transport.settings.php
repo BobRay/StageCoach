@@ -92,7 +92,7 @@ $systemSettings[7]->fromArray(array (
   'xtype' => 'textfield',
   'namespace' => 'stagecoach',
   'area' => 'StageCoach',
-  'name' => 'StageCoach Staged Resource ID',
+  'name' => 'StageCoach Staged Resource TV ID',
   'description' => 'ID of the Staged Resource TV',
 ), '', true, true);
 return $systemSettings;
