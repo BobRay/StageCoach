@@ -1,5 +1,9 @@
 Changelog for StageCoach
 
+StageCoach 1.5.1-pl
+--------------------------
+Fix issue with plugin-event connections
+
 StageCoach 1.5.0-pl
 --------------------------
 Add button to jump from original to staged resource
