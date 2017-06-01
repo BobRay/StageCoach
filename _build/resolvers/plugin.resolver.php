@@ -71,11 +71,17 @@ if ($object->xpdo) {
             $intersects = array (
                 0 =>  array (
                   'pluginid' => 'StageCoach',
-                  'event' => 'OnDocFormSave',
+                  'event' => 'OnDocFormRender',
                   'priority' => '0',
                   'propertyset' => '0',
                 ),
                 1 =>  array (
+                  'pluginid' => 'StageCoach',
+                  'event' => 'OnDocFormSave',
+                  'priority' => '0',
+                  'propertyset' => '0',
+                ),
+                2 =>  array (
                   'pluginid' => 'StageCoach',
                   'event' => 'OnWebPageInit',
                   'priority' => '0',
