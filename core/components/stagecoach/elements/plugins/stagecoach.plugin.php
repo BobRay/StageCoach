@@ -87,8 +87,7 @@ if (isset($resource) && $resource instanceof modResource && $resource->get('dele
 switch ($modx->event->name) {
 
     case 'OnDocFormRender': {
-        $siteUrl = $modx->getOption('site_url');
-
+        $managerUrl = $modx->getOption('manager_url');
 
         $button = '';
         /* Get TV ID  and Resource ID*/
@@ -162,10 +161,15 @@ switch ($modx->event->name) {
             return '';
         }
         $deleteDraftButton = <<<DELETDRAFTBUTTON
-        row = div[0];
-        var deleteDraftButton = row.insertCell(0);
-        deleteDraftButton.innerHTML = '<span id="stagecoach_button1" class="x-btn x-btn-small stagecoach-link"><button onclick="stagecoachDeleteDraft(' + $scId + ');">Delete Draft</button><span>';
+        
+        
+        var deleteDraftButton = buttonRow.insertCell(0);
+        deleteDraftButton.innerHTML = '\
+            <span id="stagecoach_delete_draft_button" class="x-btn x-btn-small stagecoach-link">\
+                <button onclick="stagecoachDeleteDraft({$scId});">Delete Draft</button>\
+            <span>';
 DELETDRAFTBUTTON;
+
 
         $deleteDraftFunction = <<<FNDELETEDRAFT
         function stagecoachDeleteDraft(id) {
@@ -206,8 +210,8 @@ DELETDRAFTBUTTON;
 
                         document.getElementById('modx-abtn-save').click();
 
-                        document.getElementById('stagecoach_button1').style.display = 'none';
-                        document.getElementById('stagecoach_button2').style.display = 'none';
+                        document.getElementById('stagecoach_delete_draft_button').style.display = 'none';
+                        document.getElementById('stagecoach_edit_draft_button').style.display = 'none';
 
                         /* Reload page (no longer used) */
                             // var url = location.href, i = url.indexOf("?") + 3;
@@ -223,16 +227,22 @@ DELETDRAFTBUTTON;
 
 FNDELETEDRAFT;
 
-        $editDraftButton = <<<EDITDRAFTBUTTON
-        row = div[0];
-        var editDraftButton = row.insertCell(0);
-        editDraftButton.innerHTML = '<span id="stagecoach_button2" class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $scId + '\'">Edit Draft</button></span>';
+$editDraftButton = <<<EDITDRAFTBUTTON
+
+        var editDraftButton = buttonRow.insertCell(0);
+        editDraftButton.innerHTML = '\
+            <span id="stagecoach_edit_draft_button" class="x-btn x-btn-small stagecoach-link">\
+                <button onclick="window.location.replace(\\'{$managerUrl}?a=resource/update&id={$scId}\\')">Edit Draft</button>\
+            </span>';
 EDITDRAFTBUTTON;
 
         $editOriginalButton = <<<EDITORIGINALBUTTON
-        row = div[0];
-        var editOriginalButton = row.insertCell(0);
-        editOriginalButton.innerHTML = '<span class="x-btn x-btn-small stagecoach-link"><button onclick="window.location.href=\'' + '$siteUrl' + 'manager/?a=resource/update&id=' + $liveId + '\'">Edit Original</button></span>';
+        
+        var editOriginalButton = buttonRow.insertCell(0);
+        editOriginalButton.innerHTML = '\
+            <span id="stagecoach_edit_original_button" class="x-btn x-btn-small stagecoach-link">\
+                <button onclick="window.location.replace(\\'{$managerUrl}?a=resource/update&id={$liveId}\\')">Edit Original</button>\
+            </span>';
 EDITORIGINALBUTTON;
 
         $jScript = <<< STAGECOACHJS
@@ -241,10 +251,11 @@ Ext.onReady(function () {
     // var siteUrl = "$siteUrl";
     // var scId = $scId;
 
-    var hostdiv = document.getElementById('modx-action-buttons');
-    div = hostdiv.getElementsByClassName("x-toolbar-left-row");
+    var buttonDiv = document.getElementById('modx-action-buttons');
+    var buttonRows = buttonDiv.getElementsByClassName("x-toolbar-left-row");
+    var buttonRow = buttonRows[0]
 
-    if (div) {
+    if (buttonRow) {
         /* Buttons */
     }
     });
