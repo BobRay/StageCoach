@@ -2,10 +2,10 @@
 StageCoach
 
 
-Author: Bob Ray <http://bobsguides.com>
+Author: Bob Ray <https://bobsguides.com>
 Copyright 2012-2017
 
-Official Documentation: http://bobsguides.com/stagecoach-tutorial.html
+Official Documentation: https://bobsguides.com/stagecoach-tutorial.html
 
 StageCoach allows you to schedule updates to existing resources.
 

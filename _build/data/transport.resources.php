@@ -2,7 +2,7 @@
 /**
  * resources transport file for StageCoach extra
  *
- * Copyright 2012-2017 by Bob Ray <http://bobsguides.com>
+ * Copyright 2012-2017 by Bob Ray <https://bobsguides.com>
  * Created on 03-05-2013
  *
  * @package stagecoach
