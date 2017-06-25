@@ -1,5 +1,10 @@
 Changelog for StageCoach
 
+StageCoach 1.5.2-pl
+--------------------------
+Fix bug with renamed manager dir.
+Code clarification
+
 StageCoach 1.5.1-pl
 --------------------------
 Fix issue with plugin-event connections
