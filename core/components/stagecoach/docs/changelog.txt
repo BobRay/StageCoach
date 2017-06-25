@@ -3,6 +3,7 @@ Changelog for StageCoach
 StageCoach 1.5.2-pl
 --------------------------
 Fix bug with renamed manager dir.
+Fix issue with file paths
 Code clarification
 
 StageCoach 1.5.1-pl
