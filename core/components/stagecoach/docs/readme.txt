@@ -3,7 +3,7 @@ StageCoach
 
 
 Author: Bob Ray <https://bobsguides.com>
-Copyright 2012-2017
+Copyright 2012-2017 Bob Ray
 
 Official Documentation: https://bobsguides.com/stagecoach-tutorial.html
 
@@ -13,6 +13,6 @@ Thanks to MODX users Michael Snow, Garry Nutting, Mat Dave Jones, and  smg6511v2
 
 Bugs and Feature Requests: https://github.com/BobRay/StageCoach
 
-Questions: http://forums.modx.com
+Questions: https://forums.modx.com
 
 Created by MyComponent

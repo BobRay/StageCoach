@@ -2,7 +2,7 @@
 /**
  * StageCoach plugin for StageCoach extra
  *
- * Copyright 2012-2017 by Bob Ray <https://bobsguides.com>
+ * Copyright 2012-2017 Bob Ray <https://bobsguides.com>
  * Created on 12-22-2012
  *
  * StageCoach is free software; you can redistribute it and/or modify it under the
@@ -132,16 +132,19 @@ switch ($modx->event->name) {
         if (!empty($scId)) { // this is an original with a staged resource with ID $scId
             /* Bail if staged resource is deleted or removed */
             $c = array('id' => $scId, 'deleted' => '0');
+
+            /* If staged resource is gone, clear TVs, save resource, and bail out */
             if (! $modx->getCount('modResource', $c)) {
                 $resource->setTVValue($stagedResourceTvId, '');
                 $resource->setTVValue($stageDateTvId, '');
+                $resource->save();
                 return '';
             }
 
-        }
+        } else {
+            /* $scId is empty; it's not an original, see if this is a staged resource
+               Look for an original that has this resource in its Staged Resource TV */
 
-        /* If it's not an original, see if this *is* a staged resource */
-        if (empty($scId)) {
             $c = array(
                 'tmplvarid' => $stagedResourceTvId,  /* TV ID */
                 'value' => $resourceId,  /* Resource ID */
@@ -253,7 +256,7 @@ Ext.onReady(function () {
 
     var buttonDiv = document.getElementById('modx-action-buttons');
     var buttonRows = buttonDiv.getElementsByClassName("x-toolbar-left-row");
-    var buttonRow = buttonRows[0]
+    var buttonRow = buttonRows[0];
 
     if (buttonRow) {
         /* Buttons */
@@ -280,12 +283,12 @@ STAGECOACHJS;
     case 'OnWebPageInit':
         $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
         if (empty($stageDateTvId)) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] StageDate  System Setting is empty');
+            $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] stagecoach_stage_date_tv_id  System Setting is empty');
             return '';
         }
         $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
         if (empty($stagedResourceTvId)) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] StageID System Setting is empty');
+            $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] stagecoach_staged_resource_tv_id System Setting is empty');
             return '';
         }
 
@@ -347,6 +350,7 @@ STAGECOACHJS;
             if (!$originalResource) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Original Resource');
+                    return '';
             }
             if ($doDebug) {
                 my_debug('Got both resources');

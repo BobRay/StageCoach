@@ -1,4 +1,4 @@
-StageCoach Extra for MODx Revolution
+StageCoach Extra for MODX Revolution
 =======================================
 
 
@@ -10,7 +10,7 @@ StageCoach Extra for MODx Revolution
 
 **Bugs and requests:** [StageCoach Issues](https://github.com/BobRay/StageCoach/issues)
 
-**Questions about using StageCoach** [MODx Forums](https://forums.modx.com)
+**Questions about using StageCoach** [MODX Forums](https://forums.modx.com)
 
 StageCoach allows you to stage changed resources for future update. You can work on updates to the staged resource without affecting the current resource. The changes will be made at the date and time you select.
 
