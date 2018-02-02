@@ -1,5 +1,12 @@
 Changelog for StageCoach
 
+StageCoach 1.5.3-pl
+--------------------------
+Fix JS bug with TVs not attached to current template
+Improved error handling
+Code clarification
+
+
 StageCoach 1.5.2-pl
 --------------------------
 Fix bug with renamed manager dir.
