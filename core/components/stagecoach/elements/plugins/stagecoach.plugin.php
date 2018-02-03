@@ -40,7 +40,15 @@
 
 $doDebug = false;
 
+/* Don't execute outside of MODX */
+if ((!isset($modx)) || (!$modx instanceof modX)) {
+    return '';
+}
 
+$modx->getService('lexicon', 'modLexicon');
+$modx->lexicon->load('stagecoach:default');
+
+$stageCoachConfirmDelete = $modx->lexicon('stagecoach_delete_confirm');
 
 if (!function_exists("my_debug")) {
     function my_debug($message, $clear = false) {
@@ -65,19 +73,25 @@ if (!function_exists("my_debug")) {
     }
 }
 
-/** @var $resource modResource */
+if (!function_exists("checkTvr")) {
+    function checkTvr($modx, $templateId, $tvId) {
+        /** @var $modx modX */
 
-/* Don't execute outside of MODX */
-if ((!isset($modx)) || (!$modx instanceof modX)) {
-    return '';
+      //  $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Event: ' . $modx->event->name);
+      //  $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] TvId: ' . $tvId);
+      //  $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] templateId: ' . $templateId);
+
+        $fields = array(
+            'tmplvarid' => $tvId,
+            'templateid' => $templateId,
+        );
+        $tvr = $modx->getObject('modTemplateVarTemplate', $fields);
+        return $tvr? true : false;
+    }
 }
 
-/* Load Lexicon */
 
-$modx->getService('lexicon', 'modLexicon');
-$modx->lexicon->load('stagecoach:default');
-
-$stageCoachConfirmDelete = $modx->lexicon('stagecoach_delete_confirm');
+/** @var $resource modResource */
 
 /* Bail if new resource is being created */
 if (isset($mode) && ($mode === modSystemEvent::MODE_NEW)) {
@@ -88,46 +102,43 @@ if (isset($resource) && $resource instanceof modResource && $resource->get('dele
     return '';
 }
 
-
-/* Get TV Ids and bail if they're empty */
-$stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
+/* Make sure we have both TvIds */
 $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
-$resourceId = $resource->get('id');
-
 if (empty($stageDateTvId)) {
     $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] stagecoach_stage_date_tv_id  System Setting is empty');
     return '';
 }
-
+$stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
 if (empty($stagedResourceTvId)) {
     $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] stagecoach_staged_resource_tv_id System Setting is empty');
     return '';
 }
 
-/* Bail if either TV is not attached to this template */
+if ($modx->event->name === 'OnWebPageInit') {
+    $doc = $modx->getObject('modResource', $modx->resourceIdentifier);
+} else {
+    $doc = $resource;
+}
 
-$tvr = $modx->getObject('modTemplateVarResource', array(
-    'contentid' => $resourceId,
-    'tmplvarid' => $stagedResourceTvId,
-));
-if (!$tvr) {
+if ( (!$doc) || (! $doc instanceof modResource)) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Could not get Resource object');
+    return '';
+}
+$templateId = $doc->get('template');
+$resourceId = $doc->get('id');
+
+if (empty ($resourceId)) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Could not get Resource ID in :' . $modx->event->name);
     return '';
 }
 
 
-$tvr = $modx->getObject('modTemplateVarResource', array(
-    'contentid' => $resourceId,
-    'tmplvarid' => $stageDateTvId,
-));
-if (!$tvr) {
+/* Make sure TVs are connected to this template */
+
+if ( (!checkTvr($modx, $templateId, $stagedResourceTvId)) || (!checkTvr($modx, $templateId, $stageDateTvId)) ) {
+    // $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] TVs not Connected');
     return '';
 }
-
-/* Get Values of both TVs */
-
-// xxx
-
-
 
 switch ($modx->event->name) {
 
@@ -135,10 +146,12 @@ switch ($modx->event->name) {
         $managerUrl = $modx->getOption('manager_url');
 
         $button = '';
+        /* Get TV ID  and Resource ID*/
+        // $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
+        // $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
+        $resourceId = $resource->get('id');
 
-       // $stagedResourceTvId = $modx->getOption('stagecoach_staged_resource_tv_id');
-       //  $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
-       //  $resourceId = $resource->get('id');
+
 
         $modx->regClientStartupHTMLBlock('
             <script type="text/javascript">
@@ -326,7 +339,6 @@ STAGECOACHJS;
     }
 
     case 'OnWebPageInit':
-       // $stageDateTvId = $modx->getOption('stagecoach_stage_date_tv_id');
 
 
         $resourceId = $modx->resourceIdentifier;
@@ -363,12 +375,12 @@ STAGECOACHJS;
 
             if (!$tvr) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
-                    '[StageCoach] . No StageID templateVarTemplate');
+                    '[StageCoach] No Staged Resource templateVarResource');
                 return '';
             }
             $stageId = $tvr->get('value');
             if (empty($stageId)) {
-                $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] StageID TV is empty');
+                $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Staged Resource ID TV is empty');
             } else {
                 if ($doDebug) {
                     my_debug('StageID TV value: ' . $stageId);
