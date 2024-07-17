@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU General Public License along with
  * StageCoach; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 330, Boston, MA 02111-1307 USA
+
 * @package stagecoach
 * @subpackage build
 */
@@ -42,21 +43,34 @@ if (!function_exists('checkFields')) {
         return true;
     }
 }
-if($object->xpdo) {
-    $modx =& $object->xpdo;
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
-        case xPDOTransport::ACTION_UPGRADE:
 
-            $intersects = array (
+/** @var modTransportPackage $transport */
+
+if ($transport) {
+    $modx =& $transport->xpdo;
+} else {
+    $modx =& $object->xpdo;
+}
+
+$isMODX3Plus = $modx->getVersionData()['version'] >= 3;
+if ($isMODX3Plus) {
+    $classPrefix = 'MODX\Revolution\\';
+} else {
+    $classPrefix = '';
+}
+
+switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+    case xPDOTransport::ACTION_INSTALL:
+
+        $intersects = array (
                 0 =>  array (
                   'pagetitle' => 'Staged Resources',
-                  'parent' => '0',
+                  'parent' => 0,
                   'template' => 'default',
                 ),
                 1 =>  array (
                   'pagetitle' => 'StageCoach Archive',
-                  'parent' => '0',
+                  'parent' => 0,
                   'template' => 'default',
                 ),
             );
@@ -97,21 +111,22 @@ if($object->xpdo) {
                     }
                 }
 
-                    if (isset($fields['tvValues'])) {
-                        foreach($fields['tvValues'] as $tvName => $value) {
-                            $resource->setTVValue($tvName, $value);
-                        }
-
+                if (isset($fields['tvValues'])) {
+                    foreach($fields['tvValues'] as $tvName => $value) {
+                        $resource->setTVValue($tvName, $value);
                     }
-                    $resource->save();
+
                 }
-
+                $resource->save();
             }
-            break;
 
-        case xPDOTransport::ACTION_UNINSTALL:
-            break;
-    }
+        }
+        break;
+
+    case xPDOTransport::ACTION_UPGRADE:
+    case xPDOTransport::ACTION_UNINSTALL:
+        break;
 }
+
 
 return true;

@@ -48,107 +48,113 @@ if (!function_exists('checkFields')) {
 $newEvents = array (
             );
 
-
-if ($object->xpdo) {
+/** @var modTransportPackage $transport */
+if ($transport) {
+    $modx =& $transport->xpdo;
+} else {
     $modx =& $object->xpdo;
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
-        case xPDOTransport::ACTION_UPGRADE:
+}
 
-            foreach($newEvents as $k => $fields) {
+$classPrefix = $modx->getVersionData()['version'] >= 3
+        ? 'MODX\Revolution\\'
+        : '';
 
-                $event = $modx->getObject('modEvent', array('name' => $fields['name']));
-                if (!$event) {
-                    $event = $modx->newObject('modEvent');
-                    if ($event) {
-                        $event->fromArray($fields, "", true, true);
-                        $event->save();
-                    }
-                }
-            }
+switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+    case xPDOTransport::ACTION_INSTALL:
 
-            $intersects = array (
-                0 =>  array (
-                  'pluginid' => 'StageCoach',
-                  'event' => 'OnDocFormRender',
-                  'priority' => '0',
-                  'propertyset' => '0',
-                ),
-                1 =>  array (
-                  'pluginid' => 'StageCoach',
-                  'event' => 'OnDocFormSave',
-                  'priority' => '0',
-                  'propertyset' => '0',
-                ),
-                2 =>  array (
-                  'pluginid' => 'StageCoach',
-                  'event' => 'OnWebPageInit',
-                  'priority' => '0',
-                  'propertyset' => '0',
-                ),
-            );
+        foreach($newEvents as $k => $fields) {
 
-            if (is_array($intersects)) {
-                foreach ($intersects as $k => $fields) {
-                    /* make sure we have all fields */
-                    if (!checkFields($modx, 'pluginid,event,priority,propertyset', $fields)) {
-                        continue;
-                    }
-                    $event = $modx->getObject('modEvent', array('name' => $fields['event']));
-
-                    $plugin = $modx->getObject('modPlugin', array('name' => $fields['pluginid']));
-                    $propertySetObj = null;
-                    if (!empty($fields['propertyset'])) {
-                        $propertySetObj = $modx->getObject('modPropertySet',
-                            array('name' => $fields['propertyset']));
-                    }
-                    if (!$plugin || !$event) {
-                        if (!$plugin) {
-                            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not find Plugin  ' .
-                                $fields['pluginid']);
-                        }
-                        if (!$event) {
-                            $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not find Event ' .
-                                $fields['event']);
-                        }
-                        continue;
-                    }
-                    $pluginEvent = $modx->getObject('modPluginEvent', array('pluginid'=>$plugin->get('id'),'event' => $fields['event']) );
-                    
-                    if (!$pluginEvent) {
-                        $pluginEvent = $modx->newObject('modPluginEvent');
-                    }
-                    if ($pluginEvent) {
-                        $pluginEvent->set('event', $fields['event']);
-                        $pluginEvent->set('pluginid', (integer) $plugin->get('id'));
-                        $pluginEvent->set('priority', (integer) $fields['priority']);
-                        if ($propertySetObj) {
-                            $pluginEvent->set('propertyset', (integer) $propertySetObj->get('id'));
-                        } else {
-                            $pluginEvent->set('propertyset', 0);
-                        }
-
-                    }
-                    if (! $pluginEvent->save()) {
-                        $modx->log(xPDO::LOG_LEVEL_ERROR, 'Unknown error saving pluginEvent for ' .
-                            $fields['plugin'] . ' - ' . $fields['event']);
-                    }
-                }
-            }
-            break;
-
-        case xPDOTransport::ACTION_UPGRADE:
-            break;
-
-        case xPDOTransport::ACTION_UNINSTALL:
-            foreach($newEvents as $k => $fields) {
-                $event = $modx->getObject('modEvent', array('name' => $fields['name']));
+            $event = $modx->getObject($classPrefix . 'modEvent', array('name' => $fields['name']));
+            if (!$event) {
+                $event = $modx->newObject($classPrefix . 'modEvent');
                 if ($event) {
-                    $event->remove();
+                    $event->fromArray($fields, "", true, true);
+                    $event->save();
                 }
             }
-            break;
-    }
+        }
+
+        $intersects = array (
+            0 =>  array (
+              'pluginid' => 'StageCoach',
+              'event' => 'OnDocFormRender',
+              'priority' => '0',
+              'propertyset' => '0',
+            ),
+            1 =>  array (
+              'pluginid' => 'StageCoach',
+              'event' => 'OnDocFormSave',
+              'priority' => '0',
+              'propertyset' => '0',
+            ),
+            2 =>  array (
+              'pluginid' => 'StageCoach',
+              'event' => 'OnWebPageInit',
+              'priority' => '0',
+              'propertyset' => '0',
+            ),
+        );
+
+        if (is_array($intersects)) {
+            foreach ($intersects as $k => $fields) {
+                /* make sure we have all fields */
+                if (!checkFields($modx, 'pluginid,event,priority,propertyset', $fields)) {
+                    continue;
+                }
+                $event = $modx->getObject($classPrefix . 'modEvent', array('name' => $fields['event']));
+
+                $plugin = $modx->getObject($classPrefix . 'modPlugin', array('name' => $fields['pluginid']));
+                $propertySetObj = null;
+                if (!empty($fields['propertyset'])) {
+                    $propertySetObj = $modx->getObject($classPrefix . 'modPropertySet',
+                        array('name' => $fields['propertyset']));
+                }
+                if (!$plugin || !$event) {
+                    if (!$plugin) {
+                        $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not find Plugin  ' .
+                            $fields['pluginid']);
+                    }
+                    if (!$event) {
+                        $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not find Event ' .
+                            $fields['event']);
+                    }
+                    continue;
+                }
+                $pluginEvent = $modx->getObject($classPrefix . 'modPluginEvent', array('pluginid'=>$plugin->get('id'),'event' => $fields['event']) );
+
+                if (!$pluginEvent) {
+                    $pluginEvent = $modx->newObject($classPrefix . 'modPluginEvent');
+                }
+                if ($pluginEvent) {
+                    $pluginEvent->set('event', $fields['event']);
+                    $pluginEvent->set('pluginid', (integer) $plugin->get('id'));
+                    $pluginEvent->set('priority', (integer) $fields['priority']);
+                    if ($propertySetObj) {
+                        $pluginEvent->set('propertyset', (integer) $propertySetObj->get('id'));
+                    } else {
+                        $pluginEvent->set('propertyset', 0);
+                    }
+
+                }
+                if (! $pluginEvent->save()) {
+                    $modx->log(xPDO::LOG_LEVEL_ERROR, 'Unknown error saving pluginEvent for ' .
+                        $fields['plugin'] . ' - ' . $fields['event']);
+                }
+            }
+        }
+        break;
+
+    case xPDOTransport::ACTION_UPGRADE:
+        break;
+
+    case xPDOTransport::ACTION_UNINSTALL:
+        foreach($newEvents as $k => $fields) {
+            $event = $modx->getObject($classPrefix . 'modEvent', array('name' => $fields['name']));
+            if ($event) {
+                $event->remove();
+            }
+        }
+        break;
 }
 
 return true;

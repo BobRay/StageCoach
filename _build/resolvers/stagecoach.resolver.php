@@ -2,7 +2,7 @@
 /**
  * Resolver for StageCoach extra
  *
- * Copyright 2012-2018 Bob Ray <https://bobsguides.com>
+ * Copyright 2012-2024 Bob Ray <https://bobsguides.com>
  * Created on 12-22-2012
  *
  * StageCoach is free software; you can redistribute it and/or modify it under the
@@ -26,65 +26,69 @@
 
 /* @var array $options */
 
-if ($object->xpdo) {
+/** @var modTransportPackage $transport */
+if ($transport) {
+    $modx =& $transport->xpdo;
+} else {
     $modx =& $object->xpdo;
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_UPGRADE:
-            /* remove connection to OnWebPageInit */
-            $plugin = $modx->getObject('modPlugin', array('name' => 'StageCoach'));
-            if ($plugin) {
-                $pluginId = $plugin->get('id');
-                $pluginEvent = $modx->getObject('modPluginEvent', array(
-                       'pluginid' => $pluginId,
-                       'event' => 'OnLoadWebDocument',
-                  ));
-                if ($pluginEvent) {
-                    $pluginEvent->remove();
-                }
-            }
-            /* intentional fall-through */
-        case xPDOTransport::ACTION_INSTALL:
+}
 
-            $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_resource_id'));
-            $res = $modx->getObject('modResource', array('alias' => 'staged-resources'));
-            if ($res && $setting) {
-                $setting->set('value', $res->get('id'));
-                $setting->save();
-            } else {
-                $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_resource_id System Setting');
+switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+    case xPDOTransport::ACTION_UPGRADE:
+        /* remove connection to OnWebPageInit */
+        $plugin = $modx->getObject('modPlugin', array('name' => 'StageCoach'));
+        if ($plugin) {
+            $pluginId = $plugin->get('id');
+            $pluginEvent = $modx->getObject('modPluginEvent', array(
+                   'pluginid' => $pluginId,
+                   'event' => 'OnLoadWebDocument',
+              ));
+            if ($pluginEvent) {
+                $pluginEvent->remove();
             }
-
-            $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_archive_id'));
-            $res = $modx->getObject('modResource', array('alias' => 'stagecoach-archive'));
-            if ($res && $setting) {
-                $setting->set('value', $res->get('id'));
-                $setting->save();
-            } else {
-                $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_archive_id System Setting');
-            }
-
-        $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_stage_date_tv_id'));
-        $tv = $modx->getObject('modTemplateVar', array('name' => 'StageDate'));
-        if ($tv && $setting) {
-            $setting->set('value', $tv->get('id'));
-            $setting->save();
-         } else {
-            $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_stage_date_tv_id System Setting');
         }
+        break;
 
-        $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_staged_resource_tv_id'));
-        $tv = $modx->getObject('modTemplateVar', array('name' => 'StageID'));
-        if ($tv && $setting) {
-            $setting->set('value', $tv->get('id'));
+    case xPDOTransport::ACTION_INSTALL:
+        $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_resource_id'));
+        $res = $modx->getObject('modResource', array('alias' => 'staged-resources'));
+        if ($res && $setting) {
+            $setting->set('value', $res->get('id'));
             $setting->save();
         } else {
-            $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_staged_resource_tv_id System Setting');
+            $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_resource_id System Setting');
         }
-            break;
 
-        case xPDOTransport::ACTION_UNINSTALL:
-            break;
+        $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_archive_id'));
+        $res = $modx->getObject('modResource', array('alias' => 'stagecoach-archive'));
+        if ($res && $setting) {
+            $setting->set('value', $res->get('id'));
+            $setting->save();
+        } else {
+            $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_archive_id System Setting');
+        }
+
+    $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_stage_date_tv_id'));
+    $tv = $modx->getObject('modTemplateVar', array('name' => 'StageDate'));
+    if ($tv && $setting) {
+        $setting->set('value', $tv->get('id'));
+        $setting->save();
+     } else {
+        $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_stage_date_tv_id System Setting');
     }
+
+    $setting = $modx->getObject('modSystemSetting', array('key' => 'stagecoach_staged_resource_tv_id'));
+    $tv = $modx->getObject('modTemplateVar', array('name' => 'StageID'));
+    if ($tv && $setting) {
+        $setting->set('value', $tv->get('id'));
+        $setting->save();
+    } else {
+        $modx->log(modX::LOG_LEVEL_ERROR, 'Failed to set stagecoach_staged_resource_tv_id System Setting');
+    }
+        break;
+
+    case xPDOTransport::ACTION_UNINSTALL:
+        break;
 }
 
 return true;
