@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License along with
  * StageCoach; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 330, Boston, MA 02111-1307 USA
+
 * @package stagecoach
 * @subpackage build
 */
@@ -31,9 +32,7 @@
 /* @var $newEvents array */
 
 if (!function_exists('checkFields')) {
-    function checkFields($required, $objectFields) {
-
-        global $modx;
+    function checkFields($modx, $required, $objectFields) {
         $fields = explode(',', $required);
         foreach ($fields as $field) {
             if (!isset($objectFields[$field])) {
@@ -92,7 +91,7 @@ if ($object->xpdo) {
             if (is_array($intersects)) {
                 foreach ($intersects as $k => $fields) {
                     /* make sure we have all fields */
-                    if (!checkFields('pluginid,event,priority,propertyset', $fields)) {
+                    if (!checkFields($modx, 'pluginid,event,priority,propertyset', $fields)) {
                         continue;
                     }
                     $event = $modx->getObject('modEvent', array('name' => $fields['event']));
@@ -136,6 +135,9 @@ if ($object->xpdo) {
                     }
                 }
             }
+            break;
+
+        case xPDOTransport::ACTION_UPGRADE:
             break;
 
         case xPDOTransport::ACTION_UNINSTALL:

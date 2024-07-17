@@ -30,8 +30,8 @@
 /* @var array $options */
 
 if (!function_exists('checkFields')) {
-    function checkFields($required, $objectFields) {
-        global $modx;
+    function checkFields($modx, $required, $objectFields) {
+
         $fields = explode(',', $required);
         foreach ($fields as $field) {
             if (! isset($objectFields[$field])) {
@@ -61,40 +61,41 @@ if($object->xpdo) {
                 ),
             );
 
-            if (is_array($intersects)) {
-                foreach ($intersects as $k => $fields) {
-                    /* make sure we have all fields */
-                    if (! checkFields('pagetitle,parent,template', $fields)) {
-                        continue;
-                    }
-                    $resource = $modx->getObject('modResource',
-                        array('pagetitle' => $fields['pagetitle']));
-                    if (! $resource) {
-                        continue;
-                    }
-                    if ($fields['template'] == 'default') {
-                        $resource->set('template', $modx->getOption('default_template'));
-                    } elseif (empty($fields['template'])) {
-                        $resource->set('template', 0);
+        if (is_array($intersects)) {
+            foreach ($intersects as $k => $fields) {
+                /* make sure we have all fields */
+                if (! checkFields($modx, 'pagetitle,parent,template', $fields)) {
+                    continue;
+                }
+                $resource = $modx->getObject($classPrefix . 'modResource',
+                    array('pagetitle' => $fields['pagetitle']));
+                if (! $resource) {
+                    continue;
+                }
+
+                if ($fields['template'] == 'default') {
+                    $resource->set('template', $modx->getOption('default_template'));
+                } elseif (empty($fields['template'])) {
+                    $resource->set('template', 0);
+                } else {
+                    $templateObj = $modx->getObject($classPrefix . 'modTemplate',
+                        array('templatename' => $fields['template']));
+                    if ($templateObj) {
+                        $resource->set('template', $templateObj->get('id'));
                     } else {
-                        $templateObj = $modx->getObject('modTemplate',
-                            array('templatename' => $fields['template']));
-                        if ($templateObj) {
-                            $resource->set('template', $templateObj->get('id'));
+                        $modx->log(modX::LOG_LEVEL_ERROR, '[Resource Resolver] Could not find template: ' . $fields['template']);
+                    }
+                }
+                if (!empty($fields['parent'])) {
+                    if ($fields['parent'] != 'default') {
+                        $parentObj = $modx->getObject($classPrefix . 'modResource', array('pagetitle' => $fields['parent']));
+                        if ($parentObj) {
+                            $resource->set('parent', $parentObj->get('id'));
                         } else {
-                            $modx->log(modX::LOG_LEVEL_ERROR, '[Resource Resolver] Could not find template: ' . $fields['template']);
+                            $modx->log(modX::LOG_LEVEL_ERROR, '[Resource Resolver] Could not find parent: ' . $fields['parent']);
                         }
                     }
-                    if (!empty($fields['parent'])) {
-                        if ($fields['parent'] != 'default') {
-                            $parentObj = $modx->getObject('modResource', array('pagetitle' => $fields['parent']));
-                            if ($parentObj) {
-                                $resource->set('parent', $parentObj->get('id'));
-                            } else {
-                                $modx->log(modX::LOG_LEVEL_ERROR, '[Resource Resolver] Could not find parent: ' . $fields['parent']);
-                            }
-                        }
-                    }
+                }
 
                     if (isset($fields['tvValues'])) {
                         foreach($fields['tvValues'] as $tvName => $value) {

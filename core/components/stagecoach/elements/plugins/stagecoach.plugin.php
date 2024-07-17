@@ -447,10 +447,11 @@ STAGECOACHJS;
             $originalResource->setTVValue('StageID', '');
             $originalResource->setTVValue('StageDate', '');
 
+
             if ($modx->getOption('stagecoach_update_publishedon_date', null, false)) {
                 $originalResource->set('publishedon', $date);
             }
-
+            /** @var  $originalResource modResource */
             $success = $originalResource->save(0);
 
             $cKey = $originalResource->get('context_key');
@@ -575,10 +576,12 @@ STAGECOACHJS;
             'publishMode' => 'unpublish',
             'parent' => $stageFolder,
             'duplicateChildren' => false,
+            'show_in_tree', '1',
         );
 
         /* duplicate and save the staged Resource */
         $stagedResource = $resource->duplicate($params);
+
         $stagedResource->save();
 
         /* unset the TVs in the staged Resource */

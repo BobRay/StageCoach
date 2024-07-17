@@ -12,13 +12,13 @@
 <h3>Installing StageCoach</h3>
 
 <p>
-Go to Extras | Installer on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put StageCoach in the search box and press Enter. Click on the &quot;Download&quot; button, and once the package is downloaded, click on the &quot;Back to Package Manager&quot; button. That should bring you back to your Package Management grid. Click on the &quot;Install&quot; button next to StageCoach in the grid. The StageCoach package should now be installed.</p>
+Go to Extras -> Installer on the main menu in the MODX Manager and click on the &quot;Download Extras&quot; button. That will take you to the Revolution Repository. Put StageCoach in the search box and press Enter. Click on the &quot;Download&quot; button, and once the package is downloaded, click on the &quot;Back to Package Manager&quot; button. That should bring you back to your Package Management grid. Click on the &quot;Install&quot; button next to StageCoach in the grid. The StageCoach package should now be installed.</p>
 
 <h3>Usage</h3>
 
 <p>To stage a Resource for later update, edit the Resource in the Manager, and on the &quot;Template Variables&quot; tab, select the &quot;Stagecoach&quot; section. Set the date and time in the &quot;Stage Date&quot; TV and save the Resource. Do *not* set the &quot;Staged Resource ID&quot; TV. It will be set automatically by StageCoach. Once StageCoach is working, you may want to create a Form Customization rule that hides the Staged Resource TV since there is no need to edit it manually.</p>
 
-<p>When a Resource is saved with the Stage Date TV set (and the Stage ID TV empty), StageCoach will make a copy of it in the &quot;Staged Resources&quot; Folder. The update date will be appended to the pagetitle. This is the Staged Resource. You can edit the Staged Resource as many times as you like before the Stage Date. When the original page is first visited after the Stage Date, StageCoach will updated it from the Staged Resource and delete the Staged Resource.</p>
+<p>When a Resource is saved with the Stage Date TV set (and the Stage ID TV empty), StageCoach will make a copy of it in the &quot;Staged Resources&quot; Folder. The update date will be appended to the pagetitle. This is the Staged Resource. You can edit the Staged Resource as many times as you like before the Stage Date. When the original page is first visited after the Stage Date, StageCoach will update it from the Staged Resource and delete the Staged Resource.</p>
 
 <p><b>If you make changes to an Original Resource that has a Staged Resource, your changes will be overwritten when the stage date arrives unless you also make those changes in the Staged Resource.</b> You can delete the Staged Resource and create a new one, but then any changes in the Staged Resource will be lost, so it's a much better practice to make all changes to the Staged Resource.</p>
 
@@ -29,7 +29,7 @@ Go to Extras | Installer on the main menu in the MODX Manager and click on the &
 <p>The two StageCoach TVs will be attached automatically to the Site's default Template, but you can disconnect them if no Resources to be staged use that Template. <b>Be sure to attach the StageCoach TVs to any other Templates used by Resources you want to stage.</b></p>
 
 
-<p>If the <code>stagecoach_archive_original</code> System Setting is set to <code>Yes</code>, before updating the original Resource, StageCoach will save a copy of it in the Archived Resources folder. StageCoach doesn't use the archived Resources for anything so you can delete them at will (or not have them at all).</p>
+<p>If the <code>stagecoach_archive_original</code> System Setting is set to <code>Yes</code>, before updating the original Resource, StageCoach will save a copy of it in the Archived Resources folder. StageCoach doesn't use the archived Resources for anything, so you can delete them at will (or not have them at all).</p>
 
 <p>In order to speed up the initial page loads, StageCoach does not update TVs by default. If you will be changing the values of any TVs in the Staged Resource, be sure to set the <code>stagecoach_include_tvs</code> System Setting to <code>Yes</code>, but remember that changes to any TVs in the Original Resource will be overwritten unless you make those changes to the TVs of the Staged Resource.</p>
 
@@ -39,7 +39,7 @@ Go to Extras | Installer on the main menu in the MODX Manager and click on the &
 
 <h3>Troubleshooting</h3>
 
-<p>Make sure the Plugin is enabled (right click  on it in the tree and select "Activate Plugin"), then clear the cache.</p>
+<p>Make sure the Plugin is enabled (right click on it in the tree and select "Activate Plugin"), then clear the cache.</p>
 
 <p>Check the System Events tab when editing the plugin and make sure it's connected to all three events: <code>OnDocFormSave</code>, <code>OnDocFormRender</code>, and <code>OnWebPageInit</code>.</p>
 
@@ -48,10 +48,10 @@ Go to Extras | Installer on the main menu in the MODX Manager and click on the &
 
 <h3>Settings</h3>
 
-<p>To set the System Settings, go to System | System Settings and type &quot;stagecoach&quot; in the Search box at the upper right and press Enter. To change a Setting, double-click on the value or right-click on the Setting and select &quot;Update Setting.&quot;</p>
+<p>To set the System Settings, go to System -> System Settings and type &quot;stagecoach&quot; in the Search box at the upper right and press Enter. To change a Setting, double-click on the value or right-click on the Setting and select &quot;Update Setting.&quot;</p>
 
 
-<a name="settingsTable"></a>
+<a id="settingsTable"></a>
 
 <h3>StageCoach System Settings</h3>
 

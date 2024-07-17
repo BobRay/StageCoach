@@ -1,5 +1,11 @@
 Changelog for StageCoach
 
+StageCoach 1.6.3-pl
+--------------------------
+ - Modifications for MODX 3
+ - Modifications for PHP 8
+ - Refactor resolvers
+
 StageCoach 1.5.3-pl
 --------------------------
 Fix JS bug with TVs not attached to current template

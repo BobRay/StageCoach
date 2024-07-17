@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License along with
  * StageCoach; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 330, Boston, MA 02111-1307 USA
+
 * @package stagecoach
 * @subpackage build
 */
@@ -28,9 +29,10 @@
 
 /* @var array $options */
 
+
+
 if (!function_exists('checkFields')) {
-    function checkFields($required, $objectFields) {
-        global $modx;
+    function checkFields($modx, $required, $objectFields) {
         $fields = explode(',', $required);
         foreach ($fields as $field) {
             if (!isset($objectFields[$field])) {
@@ -64,7 +66,7 @@ if ($object->xpdo) {
             if (is_array($intersects)) {
                 foreach ($intersects as $k => $fields) {
                     /* make sure we have all fields */
-                    if (!checkFields('tmplvarid,templateid', $fields)) {
+                    if (!checkFields($modx, 'tmplvarid,templateid', $fields)) {
                         continue;
                     }
                     $tv = $modx->getObject('modTemplateVar', array('name' => $fields['tmplvarid']));
