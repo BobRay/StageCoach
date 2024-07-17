@@ -61,7 +61,7 @@ $resources[1]->fromArray(array (
   'show_in_tree' => 1,
   'properties' => '',
 ), '', true, true);
-$resources[1]->setContent(file_get_contents($sources['data'].'resources/staged_resources.content.html'));
+$resources[1]->setContent(file_get_contents($sources['data'].'resources/staged resources.content.html'));
 
 $resources[2] = $modx->newObject('modResource');
 $resources[2]->fromArray(array (
@@ -99,6 +99,6 @@ $resources[2]->fromArray(array (
   'show_in_tree' => 1,
   'properties' => '',
 ), '', true, true);
-$resources[2]->setContent(file_get_contents($sources['data'].'resources/stagecoach_archive.content.html'));
+$resources[2]->setContent(file_get_contents($sources['data'].'resources/stagecoach archive.content.html'));
 
 return $resources;
