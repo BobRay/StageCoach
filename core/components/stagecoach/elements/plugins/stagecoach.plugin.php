@@ -533,7 +533,7 @@ STAGECOACHJS;
         $stageFolder = (empty($stageFolder)) ? $modx->getOption('stagecoach_resource_id', null, 0) : $stageFolder->get('value');
 
         /* check if Context Setting exists */
-        $archiveFolder = $modx->getObject($prefix . $prefix . 'modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_archive_id'));
+        $archiveFolder = $modx->getObject($prefix . 'modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_archive_id'));
         /* if so use that otherwise use system setting */
         $archiveFolder = (empty($archiveFolder)) ? $modx->getOption('stagecoach_archive_id', null, 0) : $archiveFolder->get('value');
         /* ************ */
