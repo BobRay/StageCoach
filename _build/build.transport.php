@@ -226,7 +226,7 @@ set_time_limit(0);
  */
 require_once dirname(dirname(__FILE__)) . '/_build/build.config.php';
 
-if ( (! isset($modx)) || (! $modx instanceof modX) ) {
+if ( (! isset($modx)) || (empty($modx)) ) {
     require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
     $modx = new modX();
     $modx->initialize('mgr');

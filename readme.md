@@ -14,4 +14,6 @@ StageCoach Extra for MODX Revolution
 
 StageCoach allows you to stage changed resources for future update. You can work on updates to the staged resource without affecting the current resource. The changes will be made at the date and time you select.
 
+**[Fully updated for MODX 3 and PHP 8]**
+
 Thanks to MODX users Michael Snow, Garry Nutting, Mat Dave Jones, and  smg6511v2, who contributed ideas, code, and testing.

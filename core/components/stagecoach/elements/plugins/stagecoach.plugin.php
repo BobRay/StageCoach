@@ -41,9 +41,14 @@
 $doDebug = false;
 
 /* Don't execute outside of MODX */
-if ((!isset($modx)) || (!$modx instanceof modX)) {
+if (!isset($modx)) {
     return '';
 }
+
+$prefix = $modx->getVersionData()['version'] >= 3
+  ? 'MODX\Revolution\\'
+  : '';
+
 
 $modx->getService('lexicon', 'modLexicon');
 $modx->lexicon->load('stagecoach:default');
@@ -51,15 +56,15 @@ $modx->lexicon->load('stagecoach:default');
 $stageCoachConfirmDelete = $modx->lexicon('stagecoach_delete_confirm');
 
 if (!function_exists("my_debug")) {
-    function my_debug($message, $clear = false) {
+    function my_debug($message, $prefix, $clear = false) {
         global $modx;
         $content = '';
-        $chunk = $modx->getObject('modChunk', array('name' => 'Debug'));
+        $chunk = $modx->getObject($prefix . 'modChunk', array('name' => 'Debug'));
         if (!$chunk) {
-            $chunk = $modx->newObject('modChunk', array('name' => 'Debug'));
+            $chunk = $modx->newObject($prefix . 'modChunk', array('name' => 'Debug'));
             $chunk->setContent('');
             $chunk->save();
-            $chunk = $modx->getObject('modChunk', array('name' => 'Debug'));
+            $chunk = $modx->getObject($prefix . 'modChunk', array('name' => 'Debug'));
         } else {
             if ($clear) {
                 $content = '';
@@ -74,7 +79,7 @@ if (!function_exists("my_debug")) {
 }
 
 if (!function_exists("checkTvr")) {
-    function checkTvr($modx, $templateId, $tvId) {
+    function checkTvr($modx, $templateId, $tvId, $prefix) {
         /** @var $modx modX */
 
       //  $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Event: ' . $modx->event->name);
@@ -85,7 +90,7 @@ if (!function_exists("checkTvr")) {
             'tmplvarid' => $tvId,
             'templateid' => $templateId,
         );
-        $tvr = $modx->getObject('modTemplateVarTemplate', $fields);
+        $tvr = $modx->getObject($prefix . 'modTemplateVarTemplate', $fields);
         return $tvr? true : false;
     }
 }
@@ -98,7 +103,7 @@ if (isset($mode) && ($mode === modSystemEvent::MODE_NEW)) {
     return '';
 }
 
-if (isset($resource) && $resource instanceof modResource && $resource->get('deleted')) {
+if (isset($resource) && (!empty($resource)) && $resource->get('deleted')) {
     return '';
 }
 
@@ -115,12 +120,12 @@ if (empty($stagedResourceTvId)) {
 }
 
 if ($modx->event->name === 'OnWebPageInit') {
-    $doc = $modx->getObject('modResource', $modx->resourceIdentifier);
+    $doc = $modx->getObject($prefix . 'modResource', $modx->resourceIdentifier);
 } else {
     $doc = $resource;
 }
 
-if ( (!$doc) || (! $doc instanceof modResource)) {
+if (!$doc) {
     $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Could not get Resource object');
     return '';
 }
@@ -135,7 +140,7 @@ if (empty ($resourceId)) {
 
 /* Make sure TVs are connected to this template */
 
-if ( (!checkTvr($modx, $templateId, $stagedResourceTvId)) || (!checkTvr($modx, $templateId, $stageDateTvId)) ) {
+if ( (!checkTvr($modx, $templateId, $stagedResourceTvId, $prefix)) || (!checkTvr($modx, $templateId, $stageDateTvId, $prefix)) ) {
     // $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] TVs not Connected');
     return '';
 }
@@ -183,7 +188,7 @@ switch ($modx->event->name) {
             'contentid' => $resourceId,  /* Resource ID */
         );
 
-        $query = $modx->newQuery('modTemplateVarResource', $c);
+        $query = $modx->newQuery($prefix . 'modTemplateVarResource', $c);
         $query->select('value');
         $scId = $modx->getValue($query->prepare());
 
@@ -208,7 +213,7 @@ switch ($modx->event->name) {
                 'value' => $resourceId,  /* Resource ID */
             );
 
-            $query = $modx->newQuery('modTemplateVarResource', $c);
+            $query = $modx->newQuery($prefix . 'modTemplateVarResource', $c);
             $query->select('contentid');
             $liveId = $modx->getValue($query->prepare());
 
@@ -348,7 +353,7 @@ STAGECOACHJS;
             return '';
         }
 
-        $tvr = $modx->getObject('modTemplateVarResource', array(
+        $tvr = $modx->getObject($prefix . 'modTemplateVarResource', array(
             'contentid' => $resourceId,
             'tmplvarid' => $stageDateTvId,
         ));
@@ -360,7 +365,7 @@ STAGECOACHJS;
             return '';
         } else {
             if ($doDebug) {
-                my_debug('Date TV content: ' . $date, true);
+                my_debug('Date TV content: ' . $date, $prefix, true);
             }
         }
 
@@ -368,7 +373,7 @@ STAGECOACHJS;
         if (time() < $timeStamp) {
             return '';
         } else { /* It's time to update the Resource */
-            $tvr = $modx->getObject('modTemplateVarResource', array(
+            $tvr = $modx->getObject($prefix . 'modTemplateVarResource', array(
                 'contentid' => $resourceId,
                 'tmplvarid' => $stagedResourceTvId,
             ));
@@ -383,10 +388,10 @@ STAGECOACHJS;
                 $modx->log(modX::LOG_LEVEL_ERROR, '[StageCoach] Staged Resource ID TV is empty');
             } else {
                 if ($doDebug) {
-                    my_debug('StageID TV value: ' . $stageId);
+                    my_debug('StageID TV value: ' . $stageId, $prefix);
                 }
             }
-            $stagedResource = $modx->getObject('modResource', $stageId);
+            $stagedResource = $modx->getObject($prefix . 'modResource', $stageId);
             if (!$stagedResource) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Staged Resource');
@@ -395,14 +400,14 @@ STAGECOACHJS;
                 return '';
             }
 
-            $originalResource = $modx->getObject('modResource', $resourceId);
+            $originalResource = $modx->getObject($prefix . 'modResource', $resourceId);
             if (!$originalResource) {
                 $modx->log(modX::LOG_LEVEL_ERROR,
                     '[StageCoach] Could not find Original Resource');
                     return '';
             }
             if ($doDebug) {
-                my_debug('Got both resources');
+                my_debug('Got both resources' , $prefix);
             }
             /* Archive original if option is set */
             $archive = $modx->getOption('stagecoach_archive_original', null, false);
@@ -431,17 +436,17 @@ STAGECOACHJS;
             $fields = $stagedResource->toArray();
             $originalFields = $originalResource->toArray();
             if ($doDebug) {
-                my_debug('toArray done');
+                my_debug('toArray done', $prefix);
             }
             /* Don't set these fields */
             unset($fields['id'], $fields['menuindex'], $fields['pagetitle'], $fields['publishedon'], $fields['alias'], $fields['published'], $fields['createdon'], $fields['hidemenu'], $fields['parent'], $fields['uri']);
 
             if ($doDebug) {
-                my_debug('past publishedon update');
+                my_debug('past publishedon update', $prefix);
             }
             $totalFields = array_merge($originalFields, $fields);
             if ($doDebug) {
-                my_debug(print_r($totalFields, true));
+                my_debug(print_r($totalFields, $prefix, true));
             }
             $originalResource->fromArray($totalFields);
             $originalResource->setTVValue('StageID', '');
@@ -481,12 +486,12 @@ STAGECOACHJS;
                         'tmplvarid' => $oldTemplateVarResource->get('tmplvarid'),
                     );
                     /* get Tvr for current resource and set it from staged resource */
-                    $tvr = $modx->getObject('modTemplateVarResource', $c);
+                    $tvr = $modx->getObject($prefix . 'modTemplateVarResource', $c);
                     if ($tvr) {
                         $tvr->set('value', $value);
                         $tvr->save();
                     } else { /* tvr does not exist -- create it */
-                        $tvr = $modx->newObject('modTemplateVarResource');
+                        $tvr = $modx->newObject($prefix . 'modTemplateVarResource');
                         $tvr->set('contentid', $resourceId);
                         $tvr->set('tmplvarid',
                             $oldTemplateVarResource->get('tmplvarid'));
@@ -523,12 +528,12 @@ STAGECOACHJS;
            context-specific staging */
 
         /* Check if Context Setting exists */
-        $stageFolder = $modx->getObject('modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_resource_id'));
+        $stageFolder = $modx->getObject($prefix . 'modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_resource_id'));
         /* If so use that otherwise use system setting */
         $stageFolder = (empty($stageFolder)) ? $modx->getOption('stagecoach_resource_id', null, 0) : $stageFolder->get('value');
 
         /* check if Context Setting exists */
-        $archiveFolder = $modx->getObject('modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_archive_id'));
+        $archiveFolder = $modx->getObject($prefix . $prefix . 'modContextSetting', array('context_key' => $key, 'key' => 'stagecoach_archive_id'));
         /* if so use that otherwise use system setting */
         $archiveFolder = (empty($archiveFolder)) ? $modx->getOption('stagecoach_archive_id', null, 0) : $archiveFolder->get('value');
         /* ************ */
@@ -556,7 +561,7 @@ STAGECOACHJS;
         $pt = $resource->get('pagetitle') . '-' . $date;
 
         if (!empty($stageId)) { /* If set, user is just updating the date */
-            $res = $modx->getObject('modResource', $stageId);
+            $res = $modx->getObject($prefix . 'modResource', $stageId);
             if ($res) { /* update pagetitle to new date */
                 $res->set('pagetitle', $pt);
                 $res->save();
@@ -565,7 +570,7 @@ STAGECOACHJS;
         }
 
         /* make sure staged Resource doesn't already exist */
-        $res = $modx->getObject('modResource', array('pagetitle' => $pt));
+        $res = $modx->getObject($prefix . 'modResource', array('pagetitle' => $pt));
         if ($res) {
             return '';
         }
