@@ -5,6 +5,7 @@ StageCoach 1.6.3-pl
  - Modifications for MODX 3
  - Modifications for PHP 8
  - Refactor resolvers
+ - Improve documentation
 
 StageCoach 1.5.3-pl
 --------------------------
