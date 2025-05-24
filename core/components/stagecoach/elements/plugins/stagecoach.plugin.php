@@ -439,7 +439,7 @@ STAGECOACHJS;
                 my_debug('toArray done', $prefix);
             }
             /* Don't set these fields */
-            unset($fields['id'], $fields['menuindex'], $fields['pagetitle'], $fields['publishedon'], $fields['alias'], $fields['published'], $fields['createdon'], $fields['hidemenu'], $fields['parent'], $fields['uri']);
+            unset($fields['id'], $fields['menuindex'], $fields['pagetitle'], $fields['publishedon'], $fields['alias'], $fields['published'], $fields['createdon'], $fields['hidemenu'], $fields['parent'], $fields['uri'], $fields['uri_override']);
 
             if ($doDebug) {
                 my_debug('past publishedon update', $prefix);
